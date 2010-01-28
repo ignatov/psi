@@ -34,7 +34,7 @@ object PSICompiler {
         }
       }
 
-      case Funcall(fun, args) => eval(fun, symbols) match {
+      case FunCall(fun, args) => eval(fun, symbols) match {
         case Closure(params, body, syms) =>
           evalBlock(body, params.zip(args.map(eval(_, symbols))) ::: syms)
       }

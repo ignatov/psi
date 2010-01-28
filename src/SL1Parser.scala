@@ -31,7 +31,7 @@ class SL1Parser extends JavaTokenParsers {
           "(" ~> expr <~ ")" | valOrFuncall
 
   def valOrFuncall = valOrFun ~ opt("(" ~> repsep(expr, ",") <~ ")") ^^ {
-    case expr ~ Some(args) => Funcall(expr, args)
+    case expr ~ Some(args) => FunCall(expr, args)
     case expr ~ None => expr
   }
 
@@ -44,7 +44,7 @@ class SL1Parser extends JavaTokenParsers {
   }
 
   def funcall: Parser[ExprTree] = expr ~ ("(" ~> repsep(expr, ",") <~ ")") ^^ {
-    case fun ~ args => Funcall(fun, args)
+    case fun ~ args => FunCall(fun, args)
   }
 
   def valdef: Parser[Definition] = ("val" ~> ident <~ "=") ~ (expr <~ ";") ^^ {

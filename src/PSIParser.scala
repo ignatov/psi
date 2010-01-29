@@ -58,7 +58,7 @@ class PSIParser extends JavaTokenParsers {
   }
 
   def valdef: Parser[ExprTree] = r ~ (ident <~ ";") ^^ {
-    case expr ~ name => Valdef(name, expr)
+    case expr ~ name => VarDef(name, expr)
   }
 //
 //  def fundef: Parser[Definition] = ("def" ~> ident <~ "=") ~ (funliteral <~ ";") ^^ {

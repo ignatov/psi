@@ -11,7 +11,7 @@ class PSIParser extends JavaTokenParsers {
 
   def A: Parser[Any] = repsep(((r | ident) ~ repsep(ident, ",")), ";")
 
-  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~ repsep(R, ";") ~ "}")
+  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~> repsep(R, ";") <~ "}")
 
   def R: Parser[Any] = S //todo
 

@@ -1,54 +1,55 @@
 package psic
 
-import scala.util.parsing.combinator._
+import scala.io.Source.fromFile
+import util.parsing.combinator._
 
 /*
  * author: ignatov
  */
 
-class PSIParser extends JavaTokenParsers {
-  def pack: Parser[Package] = ("P" ~> ident) ~ ("{" ~> repsep(relation, ";") <~ "}") ^^ {
-    case name ~ lst => Package(name, lst)
-  }
-
-  def relation: Parser[ExprTree] = scheme
-
-  def scheme: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> rep(expr) <~ "}") ^^ {
-    case name ~ lst => Scheme(name, lst)
-  }
-
-  def attrdef: Parser[ExprTree] = r ~ (ident <~ ";") ^^ {
-    case expr ~ name => AttrDef(name, expr)
-  }
-
-  def attrassign: Parser[ExprTree] = (ident <~ "<-") ~ (expr <~ ";") ^^ {
-    case name ~ expr => AttrAssign(name, expr)
-  }
-
-  def expr: Parser[ExprTree] = attrassign | attrdef
+object PSIParser extends JavaTokenParsers {
+  def main(args: Array[String]): Unit = println(parseAll(P, fromFile("input.txt").mkString))
 
   // primitive type
-  def r: Parser[ExprTree] = ("bool" | "nat" | "int" | "string" | "real") ^^ {a => Type(a)}
+  def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {a => Type(a)}
 
-  def A: Parser[Any] = repsep(((r|s) ~ repsep(ident, ",")), ";") //todo: add
+  def A: Parser[Any] = repsep(((r | ident) ~ repsep(ident, ",")), ";")
 
-  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~> repsep(R, ";") <~ "}")
+  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~ repsep(R, ";") ~ "}")
 
   def R: Parser[Any] = S //todo
 
-  def S: Parser[Any]= ("S" ~> ident) ~ ("{" ~ A ~ "|" ~ repsep(F, ";") ~ "}")
+  def S: Parser[Any] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}")
 
-  def F: Parser[Any] = ident ~ "<-" ~ Y // todo: X
+//  def S: Parser[Any] = ("S" ~> ident) ~ ("{" ~> repsep(F, ";") <~ "}")
 
-  def V: Parser[Any] = ("{" ~ ((A ~ "|") ~ repsep(F, ";")) ~ "}") | repsep(F, ";")
+  def F: Parser[FL] = (ident <~ "<-") ~ Y ^^ {
+    case name ~ expr => FL(name, expr)
+  }
+  
+  def Y: Parser[ExprTree] = wholeNumber ^^ {x => Number(x.toInt)} | ident ^^ {x=> Value(x.toString)}
 
-  def X: Parser[Any] = repsep(Y, f)
+//  def V: Parser[Any] = ("{" ~> ((A <~ "|") ~ repsep(F, ";")) <~ "}") | repsep(F, ";")
+//
+//  def X: Parser[Any] = repsep(Y, f)
 
-  def Y: Parser[Any] = (n | wholeNumber)//todo: | ("(" ~ X ~ ")")
+//  def Y: Parser[ExprTree] = wholeNumber ^^ {x => Number(x.toInt)}
+                            //| ident ^^ {x=> Value(x.toString)} ////todo: | ("(" ~ X ~ ")") 
+//
+//  def n: Parser[Any] = ident // todo
+//
+//  def s: Parser[Any] = ident
 
-  def n: Parser[Any] = ident // todo
-
-  def s: Parser[Any] = ident
-
-  def f: Parser[Any] = ("+" | "-" | "*" | "/" | "==" | "<" | ">" | "<>" | "<=" | ">=")
+//  def f: Parser[Operator] = ("+" | "-" | "*" | "/" | "==" | "<" | ">" | "<>" | "<=" | ">=") ^^ {x => Operator(x.toString)}
 }
+
+
+class ExprTree
+case class Number(value: Int) extends ExprTree
+case class Value(value: String) extends ExprTree
+case class Operator(value: String) extends ExprTree
+case class Type(name: String) extends ExprTree
+case class Package(name: String, lst: List[ExprTree]) extends ExprTree
+case class Scheme(name: String, lst: List[ExprTree]) extends ExprTree
+case class AttrDef(name: String, expr: ExprTree) extends ExprTree
+case class FL(name: String, expr: ExprTree) extends ExprTree

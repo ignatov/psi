@@ -1,8 +1,8 @@
-P Kinematics { 
-  S Particle {
-    nat t, t1
-    |
-    t <- 10;
-    t2 <- 20
-  }
+P Kinematics {
+    S Sp {
+        nat t1, t
+        |
+        t <- 10;
+        t1 <- 20
+    }
 }

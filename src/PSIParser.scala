@@ -21,26 +21,19 @@ object PSIParser extends JavaTokenParsers {
 
   def S: Parser[Any] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}")
 
-//  def S: Parser[Any] = ("S" ~> ident) ~ ("{" ~> repsep(F, ";") <~ "}")
+  def F: Parser[FL] = (ident <~ "<-") ~ Y ^^ {case name ~ expr => FL(name, expr)}
 
-  def F: Parser[FL] = (ident <~ "<-") ~ Y ^^ {
-    case name ~ expr => FL(name, expr)
-  }
-  
-  def Y: Parser[ExprTree] = wholeNumber ^^ {x => Number(x.toInt)} | ident ^^ {x=> Value(x.toString)}
+  def Y: Parser[ExprTree] = wholeNumber ^^ {x => Number(x.toInt)} | ident ^^ {x => Value(x.toString)} //todo: | ("(" ~ X ~ ")")
 
-//  def V: Parser[Any] = ("{" ~> ((A <~ "|") ~ repsep(F, ";")) <~ "}") | repsep(F, ";")
-//
-//  def X: Parser[Any] = repsep(Y, f)
+  //  def V: Parser[Any] = ("{" ~> ((A <~ "|") ~ repsep(F, ";")) <~ "}") | repsep(F, ";")
 
-//  def Y: Parser[ExprTree] = wholeNumber ^^ {x => Number(x.toInt)}
-                            //| ident ^^ {x=> Value(x.toString)} ////todo: | ("(" ~ X ~ ")") 
-//
-//  def n: Parser[Any] = ident // todo
-//
-//  def s: Parser[Any] = ident
+  //  def X: Parser[Any] = repsep(Y, f)
 
-//  def f: Parser[Operator] = ("+" | "-" | "*" | "/" | "==" | "<" | ">" | "<>" | "<=" | ">=") ^^ {x => Operator(x.toString)}
+  //  def n: Parser[Any] = ident // todo
+
+  //  def s: Parser[Any] = ident
+
+  //  def f: Parser[Operator] = ("+" | "-" | "*" | "/" | "==" | "<" | ">" | "<>" | "<=" | ">=") ^^ {x => Operator(x.toString)}
 }
 
 

@@ -1,0 +1,8 @@
+P Kinematics { 
+  S Particle { 
+    nat a;
+    bool b; 
+  }
+  
+  S Particle { nat t; nat tm; nat h; }
+}

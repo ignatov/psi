@@ -7,15 +7,23 @@ import util.parsing.combinator._
  */
 
 class PSIParser extends JavaTokenParsers {
-  def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {a => Type(a)}
+  def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {x => Type(x)}
 
-  def A: Parser[Any] = repsep(((r | ident) ~ repsep(ident, ",")), ";")
+  def attributes: Parser[List[Attribute]] = r ~ repsep(ident, ",") ^^ { //todo: <s>
+    case t ~ lst => lst.map(x => Attribute(x, t))
+  }
 
-  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~> repsep(R, ";") <~ "}")
+  def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {lst => lst.foldLeft(List[Attribute]()){_:::_}}
 
-  def R: Parser[Any] = S //todo
+  def P: Parser[Any] = ("P" ~> ident) ~ ("{" ~> repsep(R, ";") <~ "}") ^^ {
+    case name ~ relations => Package(name, relations)
+  }
 
-  def S: Parser[Any] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}")
+  def R: Parser[ExprTree] = S //todo
+
+  def S: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
+    case name ~ attributes ~ fls => Scheme(name, attributes, fls)
+  }
 
   def F: Parser[FL] = (ident <~ "<-") ~ Y ^^ {case name ~ expr => FL(name, expr)}
 

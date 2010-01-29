@@ -1,6 +1,7 @@
 P Kinematics {
     S Sp {
-        nat t1, t
+        nat t1, t;
+        bool b1, b2
         |
         t <- 10;
         t1 <- 20

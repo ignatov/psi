@@ -8,9 +8,9 @@ import scala.io.Source.fromFile
 
 object PSICompiler {
   def main(args: Array[String]): Unit = {
-//    val parser = PSIParser
-//    var input = fromFile("input.txt").mkString
-//    val result = parser.parse(parser.P, input)
-//    println(result)
+    val parser = new PSIParser
+    var input = fromFile("input.txt").mkString
+    val result = parser.parse(parser.P, input)
+    println(result)
   }
 }

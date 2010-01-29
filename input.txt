@@ -4,7 +4,7 @@ P Kinematics {
         bool b1, b2
         |
         t <- 10;
-        t1 <- 20;
+        t1 <- (20 + t + t2 - 100);
         t2 <- t
     }
 }

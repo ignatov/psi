@@ -30,8 +30,8 @@ class PSIParser extends JavaTokenParsers {
   def F: Parser[FL] = (ident <~ "<-") ~ Y ^^ {case result ~ expr => FL(result, expr)}
 
   def Y: Parser[ExprTree] = (wholeNumber ^^ {x => Number(x.toInt)}
-    | ident ^^ {x => Expr(x)}
-    | "(" ~> X <~ ")")
+          | ident ^^ {x => Expr(x)}
+          | "(" ~> X <~ ")")
 
   def X: Parser[ExprTree] = (Y ~ rep(op ~ Y)) ^^ {
     case a ~ lst => (a /: lst) {

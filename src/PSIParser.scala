@@ -39,6 +39,8 @@ class PSIParser extends JavaTokenParsers {
     }
   }
 
+  def G: Parser[ExprTree] = X
+
   //  def V: Parser[Any] = ("{" ~> ((A <~ "|") ~ repsep(F, ";")) <~ "}") | repsep(F, ";")
 
   //  def T: Parser[Any] = repsep(wholeNumber, f)

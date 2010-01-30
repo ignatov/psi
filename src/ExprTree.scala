@@ -12,4 +12,5 @@ case class Attribute(name: String, t: Type) extends ExprTree
 case class FL(name: String, expr: ExprTree) extends ExprTree
 case class Number(value: Int) extends ExprTree
 case class Value(value: String) extends ExprTree
+case class Expr(value: String) extends ExprTree
 case class Operator(right: ExprTree, left: ExprTree, op: String) extends ExprTree

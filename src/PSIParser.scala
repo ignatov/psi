@@ -15,11 +15,11 @@ class PSIParser extends JavaTokenParsers {
 
   def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {lst => lst.foldLeft(List[Attribute]()) {_ ::: _}}
 
-  def P: Parser[Package] = ("P" ~> ident) ~ ("{" ~> repsep((S|Q), ";") <~ "}") ^^ { //todo: uninline R
+  def P: Parser[Package] = ("P" ~> ident) ~ ("{" ~> repsep(rel, ";") <~ "}") ^^ {
     case name ~ relations => Package(name, relations)
   }
 
-//  def R: Parser[ExprTree] = (S|Q) ^^ {x => x}
+  def rel: Parser[ExprTree] = (S ^^ {case x => x}|Q)
 
   def S: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
     case name ~ attributes ~ fls => Scheme(name, attributes, fls)

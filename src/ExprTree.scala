@@ -8,6 +8,8 @@ class ExprTree
 case class Package(name: String, lst: List[ExprTree]) extends ExprTree
 case class Scheme(name: String, attributes: List[Attribute], fls: List[FL]) extends ExprTree
 case class Block(attributes: List[Attribute], fls: List[FL]) extends ExprTree
+case class IfExpr(condition: ExprTree, positive: Block, negative: Block) extends ExprTree
+case class CondScheme(s: Scheme, condition: IfExpr) extends ExprTree 
 case class Type(name: String) extends ExprTree
 case class Attribute(name: String, t: Type) extends ExprTree
 case class FL(name: String, expr: ExprTree) extends ExprTree

@@ -19,7 +19,15 @@ class PSIParser extends JavaTokenParsers {
     case name ~ relations => Package(name, relations)
   }
 
-  def rel: Parser[ExprTree] = (S ^^ {case x => x}|Q)
+  // `R` in PSI-Defs
+  def rel: Parser[ExprTree] = (Q | S ~ opt(i) ^^ {
+    case s ~ None => s
+    case s ~ Some(condition) => CondScheme(s, condition)
+  })
+
+  def i: Parser[IfExpr] = ("if" ~> G) ~ ("then" ~> V) ~ ("else" ~> V) <~ "fi" ^^ {
+    case condition ~ positive ~ negative => IfExpr(condition, positive, negative)
+  }
 
   def S: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
     case name ~ attributes ~ fls => Scheme(name, attributes, fls)
@@ -43,11 +51,9 @@ class PSIParser extends JavaTokenParsers {
 
   def G: Parser[ExprTree] = X
 
-  def V: Parser[Block] = (("{" ~> A) ~ ("|" ~> repsep(F, ";")) ^^ {
+  def V: Parser[Block] = (("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
     case attributes ~ fls => Block(attributes, fls)
-  }) | repsep(F, ";") ^^ {
-    case fls => Block(Nil, fls)
-  }
+  }) | repsep(F, ";") ^^ {case fls => Block(Nil, fls)}
 
   def n: Parser[ExprTree] = ident ~ opt("." ~> ident) ^^ {
     case e ~ None => Expr(e)

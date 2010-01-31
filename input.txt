@@ -6,6 +6,18 @@ P Kinematics {
         t <- 10;
         t1 <- (20 + t + t2 - 100);
         t2 <- t.d
-    };
+    }
+    if t1 then {
+        nat t2, t1, t;
+        bool b1, b2
+        |
+        t <- 10;
+        t1 <- (20 + t + t2 - 100);
+        t2 <- t.d
+    }
+    else
+        t2 <- t.d
+    fi
+    ;
     Q name {on Sp in t1, t2 out t2, t3}
 }

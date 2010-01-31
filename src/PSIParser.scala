@@ -10,12 +10,12 @@ class PSIParser extends JavaTokenParsers {
   def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {x => Type(x)}
 
   def attributes: Parser[List[Attribute]] = (r ~ repsep(ident, ",") ^^ {
-    case t ~ lst => lst.map(x => Attribute(x, t))
+    case t ~ lst => lst.map(Attribute(_, t))
   }) | (ident ~ repsep(ident, ",") ^^ {
-    case typename ~ lst => lst.map(x => Attribute(x, Type(typename)))
+    case typename ~ lst => lst.map(Attribute(_, Type(typename)))
   })
 
-  def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {lst => lst.foldLeft(List[Attribute]()) {_ ::: _}}
+  def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {_.foldLeft(List[Attribute]()) {_ ::: _}}
 
   def P: Parser[Package] = ("P" ~> ident) ~ ("{" ~> repsep(rel, ";") <~ "}") ^^ {
     case name ~ relations => Package(name, relations)
@@ -55,7 +55,7 @@ class PSIParser extends JavaTokenParsers {
 
   def V: Parser[Block] = (("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
     case attributes ~ fls => Block(attributes, fls)
-  }) | repsep(F, ";") ^^ {case fls => Block(Nil, fls)}
+  }) | repsep(F, ";") ^^ {Block(Nil, _)}
 
   def n: Parser[ExprTree] = ident ~ opt("." ~> ident) ^^ {
     case e ~ None => Expr(e)

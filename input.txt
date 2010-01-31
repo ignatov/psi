@@ -6,5 +6,6 @@ P Kinematics {
         t <- 10;
         t1 <- (20 + t + t2 - 100);
         t2 <- t.d
-    }
+    };
+    Q name {on Sp in t1, t2 out t2, t3}
 }

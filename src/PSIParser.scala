@@ -41,13 +41,13 @@ class PSIParser extends JavaTokenParsers {
     case name ~ scheme ~ in ~ out => Task(name, scheme, in, out)
   }
 
-//  def sQ: Parser[Task] = ("Q" ~> ident) ^^ {
-//    case name => Task(name, "sp", Nil, Nil)
-//  }
-
   def G: Parser[ExprTree] = X
 
-  //  def V: Parser[Any] = ("{" ~> ((A <~ "|") ~ repsep(F, ";")) <~ "}") | repsep(F, ";")
+  def V: Parser[Block] = (("{" ~> A) ~ ("|" ~> repsep(F, ";")) ^^ {
+    case attributes ~ fls => Block(attributes, fls)
+  }) | repsep(F, ";") ^^ {
+    case fls => Block(Nil, fls)
+  }
 
   def n: Parser[ExprTree] = ident ~ opt("." ~> ident) ^^ {
     case e ~ None => Expr(e)

@@ -9,9 +9,11 @@ import util.parsing.combinator._
 class PSIParser extends JavaTokenParsers {
   def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {x => Type(x)}
 
-  def attributes: Parser[List[Attribute]] = r ~ repsep(ident, ",") ^^ { //todo: <s>
+  def attributes: Parser[List[Attribute]] = (r ~ repsep(ident, ",") ^^ {
     case t ~ lst => lst.map(x => Attribute(x, t))
-  }
+  }) | (ident ~ repsep(ident, ",") ^^ {
+    case typename ~ lst => lst.map(x => Attribute(x, Type(typename)))
+  })
 
   def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {lst => lst.foldLeft(List[Attribute]()) {_ ::: _}}
 

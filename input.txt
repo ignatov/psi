@@ -9,7 +9,8 @@ P Kinematics {
     }
     if t1 then {
         nat t2, t1, t;
-        bool b1, b2
+        bool b1, b2;
+        Sp S1
         |
         t <- 10;
         t1 <- (20 + t + t2 - 100);

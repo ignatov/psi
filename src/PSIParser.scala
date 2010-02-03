@@ -9,13 +9,13 @@ import util.parsing.combinator._
 class PSIParser extends JavaTokenParsers {
   def r: Parser[Type] = ("bool" | "nat" | "int" | "string" | "real") ^^ {x => Type(x)}
 
-  def attributes: Parser[List[Attribute]] = (r ~ repsep(ident, ",") ^^ {
-    case t ~ lst => lst.map(Attribute(_, t))
+  def attributes: Parser[List[AttributeDef]] = (r ~ repsep(ident, ",") ^^ {
+    case t ~ lst => lst.map(AttributeDef(_, t))
   }) | (ident ~ repsep(ident, ",") ^^ {
-    case typename ~ lst => lst.map(Attribute(_, Type(typename)))
+    case typename ~ lst => lst.map(AttributeDef(_, Type(typename)))
   })
 
-  def A: Parser[List[Attribute]] = repsep(attributes, ";") ^^ {_.foldLeft(List[Attribute]()) {_ ::: _}}
+  def A: Parser[List[AttributeDef]] = repsep(attributes, ";") ^^ {_.foldLeft(List[AttributeDef]()) {_ ::: _}}
 
   def P: Parser[Package] = ("P" ~> ident) ~ ("{" ~> repsep(rel, ";") <~ "}") ^^ {
     case name ~ relations => Package(name, relations)
@@ -56,8 +56,8 @@ class PSIParser extends JavaTokenParsers {
   }) | repsep(F, ";") ^^ {Block(Nil, _)}
 
   def n: Parser[ExprTree] = ident ~ opt("." ~> ident) ^^ {
-    case e ~ None => Expr(e)
-    case e ~ Some(sub) => AttrWithSubAttr(e, sub)
+    case a ~ None => AttributeOccurance(a)
+    case a ~ Some(sub) => AttrWithSubAttr(a, sub)
   }
 
   // `f` in PSI-Defs

@@ -1,4 +1,4 @@
-package psic
+package psic.parser
 
 import util.parsing.combinator._
 

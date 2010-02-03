@@ -1,5 +1,6 @@
 package psic
 
+import parser.PSIParser
 import scala.io.Source.fromFile
 
 /*

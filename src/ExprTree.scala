@@ -1,4 +1,4 @@
-package psic
+package psic.parser
 
 /*
  * author: ignatov

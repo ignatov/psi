@@ -13,8 +13,7 @@ case class Type(name: String) extends ExprTree
 case class AttributeDef(name: String, t: Type) extends ExprTree
 case class FL(name: String, expr: ExprTree) extends ExprTree
 case class Number(value: Int) extends ExprTree
-case class Value(value: String) extends ExprTree
 case class AttributeOccurance(value: String) extends ExprTree
 case class AttrWithSubAttr(attr: String, sub: String) extends ExprTree
-case class Task(name: String, scheme: String, in: List[ExprTree], out: List[ExprTree]) extends ExprTree //todo
+case class Task(name: String, scheme: String, in: List[ExprTree], out: List[ExprTree]) extends ExprTree
 case class Operator(right: ExprTree, left: ExprTree, op: String) extends ExprTree

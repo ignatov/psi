@@ -11,7 +11,7 @@ case class Block(attributes: List[AttributeDef], fls: List[FL]) extends ExprTree
 case class IfExpr(condition: ExprTree, positive: Block, negative: Block) extends ExprTree
 case class Type(name: String) extends ExprTree
 case class AttributeDef(name: String, t: Type) extends ExprTree
-case class FL(name: String, expr: ExprTree) extends ExprTree
+case class FL(result: ExprTree, implementation: ExprTree) extends ExprTree
 case class Number(value: Int) extends ExprTree
 case class AttributeOccurance(value: String) extends ExprTree
 case class AttrWithSubAttr(attr: String, sub: String) extends ExprTree

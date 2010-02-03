@@ -2,8 +2,9 @@ package pcis.metamodel
 
 import collection.mutable.HashMap
 
-/*
- * author: ignatov
+/**
+ * @author: ignatov
+ * Date:    04.02.2010
  */
 
 case class P(name: String, features: HashMap[String, R])

@@ -1,7 +1,8 @@
 package psic.parser
 
-/*
- * author: ignatov
+/**
+ * @author: ignatov
+ * Date:    04.02.2010
  */
 
 class ExprTree

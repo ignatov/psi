@@ -2,8 +2,9 @@ package psic.parser
 
 import util.parsing.combinator._
 
-/*
- * author: ignatov
+/**
+ * @author: ignatov
+ * Date:    04.02.2010
  */
 
 class PSIParser extends JavaTokenParsers {

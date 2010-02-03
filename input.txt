@@ -21,4 +21,11 @@ P Kinematics {
     fi
     ;
     Q name {on Sp in t1, t2 out t2, t3}
+    ;
+    S S1 {
+        nat t2;
+        bool b1, b2
+        |
+        t <- 10
+    }
 }

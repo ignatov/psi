@@ -25,7 +25,7 @@ object Converter {
   }
 
   private def relation2R(expr: Relation): R = expr match {
-    case Scheme(name, condition, attributes, fls) => {
+    case Scheme(name, ifExpr, attributes, fls) => {
       val typeTable = new HashMap[String, T]() //todo: need to copy to S?
       val attributeTable = new HashMap[String, A]()
 
@@ -33,11 +33,16 @@ object Converter {
               a => attributeTable.put(a.name, //todo: maybe putOrUpdate?
                 A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
 
-      S(name, null, null, null, null, attributeTable)
+      S(name, getCondition(ifExpr), null, null, null, attributeTable)
     }
 
     case Task(name, scheme, in, out) => Q(name, null, null)
     case _ => null
+  }
+
+  private def getCondition(ifExpr: IfExpr): G = ifExpr match {
+    case null => null
+    case i => condition2G(i.condition)
   }
 
   private def getOccurrences(expr: Expression): List[AttributeOccurrence] = expr match {
@@ -57,5 +62,5 @@ object Converter {
 
   private def condition2G(condition: Expression): G = G(expression2X(condition))
 
-//  private def block2V(block: Block): V = V()
+  //  private def block2V(block: Block): V = V()
 }

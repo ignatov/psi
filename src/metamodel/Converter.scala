@@ -33,11 +33,7 @@ object Converter {
               a => attributeTable.put(a.name, //todo: maybe putOrUpdate?
                 A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
 
-      def getOccurrences(expr: ExprTree): List[AttributeOccurrence] = expr match {
-        case AttributeOccurrence(attr, sub) => List(AttributeOccurrence(attr, sub))
-        case Number(_) => Nil
-        case Operator(left, right, op) => getOccurrences(left) ::: getOccurrences(right)
-      }
+
 
       fls foreach (f => println(getOccurrences(f.implementation)))
 
@@ -48,8 +44,18 @@ object Converter {
     case _ => null
   }
 
-  def occurrence2N(n: AttributeOccurrence): N = n match {
-    case AttributeOccurrence(attr, null) => null
+  private def getOccurrences(expr: Expression): List[AttributeOccurrence] = expr match {
+    case AttributeOccurrence(attr, sub) => List(AttributeOccurrence(attr, sub))
+    case Number(_) => Nil
+    case Operator(left, right, op) => getOccurrences(left) ::: getOccurrences(right)
+  }
+
+  private def occurrence2N(n: AttributeOccurrence): N = n match {
+    case AttributeOccurrence(attr, null) => null //todo: add implementation
     case AttributeOccurrence(attr, sub) => null
   }
+
+  private def expression2X(e: Expression): X = X("empty", getOccurrences(e) map occurrence2N) //todo: add implementation to Expression
+
+  private def fl2F(fl: FL): F = F(expression2X(fl.implementation), occurrence2N(fl.result))
 }

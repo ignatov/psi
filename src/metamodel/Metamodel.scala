@@ -7,24 +7,57 @@ import collection.mutable.HashMap
  * Date:    04.02.2010
  */
 
+/**
+ * Package
+ */
 case class P(name: String, features: HashMap[String, R])
 
+/**
+ * Relation
+ */
 trait R {def name: String}
 
+/**
+ * Scheme
+ */
 case class S(name: String, condition: G, thenBranch: V, elseBranch: V, fls: List[F], features: HashMap[String, A]) extends R
 
+/**
+ * Task
+ */
 case class Q(name: String, in: List[N], out: List[N]) extends R
 
+/**
+ * Guard
+ */
 case class G(expr: X)
 
-case class A(name: String, t: Type)
+/**
+ * Attribute
+ */
+case class A(name: String, t: T)
 
-case class N(t: Type, args: List[F], ress: List[F], attrs: List[A])
+/**
+ * Attribute occuraNce
+ */
+case class N(t: T, args: List[F], ress: List[F], attrs: List[A])
 
+/**
+ * Variant part
+ */
 case class V(scheme: S, fls: List[F], features: HashMap[String, A])
 
+/**
+ * Functional link
+ */
 case class F(expr: X, res: N)
 
+/**
+ * eXpression
+ */
 case class X(impl: String, args: List[N])
 
-case class Type(name: String)
+/**
+ * Type
+ */
+case class T(name: String)

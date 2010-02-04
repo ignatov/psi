@@ -6,7 +6,7 @@ package psic.parser
  */
 
 class ExprTree
-case class Relation(name: String) extends ExprTree
+abstract case class Relation(name: String) extends ExprTree
 case class Package(name: String, lst: List[Relation]) extends ExprTree
 case class Scheme(override val name: String, condition: IfExpr, attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
 case class Block(attributes: List[AttributeDef], fls: List[FL]) extends ExprTree

@@ -7,7 +7,14 @@ package psic.parser
 
 class ExprTree
 
-abstract class Expression extends ExprTree
+abstract class Expression extends ExprTree {
+  override def toString(): String = this match {
+    case Number(value) => value toString
+    case AttributeOccurrence(value, null) => value
+    case AttributeOccurrence(value, sub) => value + "." + sub
+    case Operator(left, right, op) => "(" + left.toString + " " + op + " " + right.toString + ")"
+  }
+}
 case class Number(value: Int) extends Expression
 case class AttributeOccurrence(value: String, sub: String) extends Expression
 case class Operator(left: Expression, right: Expression, op: String) extends Expression

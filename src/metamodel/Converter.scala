@@ -56,7 +56,7 @@ object Converter {
     case AttributeOccurrence(attr, sub) => null
   }
 
-  private def expression2X(e: Expression): X = X("empty", getOccurrences(e) map occurrence2N) //todo: add implementation to Expression
+  private def expression2X(e: Expression): X = X(e toString, getOccurrences(e) map occurrence2N)
 
   private def fl2F(fl: FL): F = F(expression2X(fl.implementation), occurrence2N(fl.result))
 

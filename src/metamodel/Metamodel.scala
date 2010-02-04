@@ -38,7 +38,7 @@ case class G(expr: X)
 case class A(name: String, t: T)
 
 /**
- * Attribute occuraNce
+ * Attribute occurrence
  */
 case class N(t: T, args: List[F], ress: List[F], attrs: List[A])
 
@@ -53,7 +53,7 @@ case class V(scheme: S, fls: List[F], features: HashMap[String, A])
 case class F(expr: X, res: N)
 
 /**
- * eXpression
+ * Expression
  */
 case class X(impl: String, args: List[N])
 

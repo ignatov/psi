@@ -1,4 +1,4 @@
-package metamodel
+package psic.metamodel
 
 import collection.mutable.HashMap
 import pcis.metamodel._
@@ -18,11 +18,11 @@ object Converter {
    */
   def run(pack: Package): P = {
     val h = new HashMap[String, R]()
-    pack.lst foreach(s => h.put(s.name, relation2R(s)))
+    pack.lst foreach (s => h.put(s.name, relation2R(s)))
     P(pack.name, h)
   }
 
-  def relation2R(expr: ExprTree): R = expr match {
+  def relation2R(expr: Relation): R = expr match {
     case Scheme(name, condition, attributes, fls) => S(name, null, null, null, null, null)
     case Task(name, scheme, in, out) => Q(name, null, null)
     case _ => null

@@ -1,7 +1,8 @@
 package metamodel
 
-import pcis.metamodel.P
-import psic.parser.Package
+import collection.mutable.HashMap
+import pcis.metamodel._
+import psic.parser._
 
 /**
  * @author: ignatov
@@ -12,7 +13,18 @@ import psic.parser.Package
  * Convert from PSI AST to PSI metamodel
  */
 object Converter {
+  /**
+   * @param `pack' the package to be converted
+   */
   def run(pack: Package): P = {
-    return P("empty", null)
+    val h = new HashMap[String, R]()
+    pack.lst foreach(s => h.put(s.name, relation2R(s)))
+    P(pack.name, h)
+  }
+
+  def relation2R(expr: ExprTree): R = expr match {
+    case Scheme(name, condition, attributes, fls) => S(name, null, null, null, null, null)
+    case Task(name, scheme, in, out) => Q(name, null, null)
+    case _ => null
   }
 }

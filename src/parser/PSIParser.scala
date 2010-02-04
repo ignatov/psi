@@ -36,11 +36,11 @@ class PSIParser extends JavaTokenParsers {
 
   def F: Parser[FL] = (n <~ "<-") ~ Y ^^ {case result ~ implementation => FL(result, implementation)}
 
-  def Y: Parser[ExprTree] = (wholeNumber ^^ {x => Number(x.toInt)}
+  def Y: Parser[Expression] = (wholeNumber ^^ {x => Number(x.toInt)}
           | n
           | "(" ~> X <~ ")")
 
-  def X: Parser[ExprTree] = (Y ~ rep(op ~ Y)) ^^ {
+  def X: Parser[Expression] = (Y ~ rep(op ~ Y)) ^^ {
     case a ~ lst => (a /: lst) {
       case (x, op ~ y) => Operator(x, y, op)
     }
@@ -50,7 +50,7 @@ class PSIParser extends JavaTokenParsers {
     case name ~ scheme ~ in ~ out => Task(name, scheme, in, out)
   }
 
-  def G: Parser[ExprTree] = X
+  def G: Parser[Expression] = X
 
   def V: Parser[Block] = (("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ^^ {
     case attributes ~ fls => Block(attributes, fls)

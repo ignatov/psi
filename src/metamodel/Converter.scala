@@ -33,10 +33,6 @@ object Converter {
               a => attributeTable.put(a.name, //todo: maybe putOrUpdate?
                 A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
 
-
-
-      fls foreach (f => println(getOccurrences(f.implementation)))
-
       S(name, null, null, null, null, attributeTable)
     }
 
@@ -58,4 +54,8 @@ object Converter {
   private def expression2X(e: Expression): X = X("empty", getOccurrences(e) map occurrence2N) //todo: add implementation to Expression
 
   private def fl2F(fl: FL): F = F(expression2X(fl.implementation), occurrence2N(fl.result))
+
+  private def condition2G(condition: Expression): G = G(expression2X(condition))
+
+//  private def block2V(block: Block): V = V()
 }

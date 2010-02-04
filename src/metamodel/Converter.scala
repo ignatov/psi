@@ -2,7 +2,7 @@ package psic.metamodel
 
 import collection.mutable.HashMap
 import pcis.metamodel._
-import psic.parser.{Package, Relation, Scheme, Task}
+import psic.parser._
 
 /**
  * @author: ignatov
@@ -33,10 +33,23 @@ object Converter {
               a => attributeTable.put(a.name, //todo: maybe putOrUpdate?
                 A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
 
+      def getOccurances(expr: ExprTree): List[AttributeOccurance] = expr match {
+        case AttributeOccurance(attr, sub) => List(AttributeOccurance(attr, sub))
+        case Number(_) => Nil
+        case Operator(left, right, op) => getOccurances(left) ::: getOccurances(right)
+      }
+
+      fls foreach (f => println(getOccurances(f.implementation)))
+
       S(name, null, null, null, null, attributeTable)
     }
 
     case Task(name, scheme, in, out) => Q(name, null, null)
     case _ => null
+  }
+
+  def occurance2N(n: AttributeOccurance): N = n match {
+    case AttributeOccurance(attr, null) => null
+    case AttributeOccurance(attr, sub) => null
   }
 }

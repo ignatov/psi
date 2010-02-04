@@ -56,9 +56,9 @@ class PSIParser extends JavaTokenParsers {
     case attributes ~ fls => Block(attributes, fls)
   }) | repsep(F, ";") ^^ {Block(Nil, _)}
 
-  def n: Parser[AttributeOccurance] = ident ~ opt("." ~> ident) ^^ {
-    case a ~ None => AttributeOccurance(a, null)
-    case a ~ Some(sub) => AttributeOccurance(a, sub)
+  def n: Parser[AttributeOccurrence] = ident ~ opt("." ~> ident) ^^ {
+    case a ~ None => AttributeOccurrence(a, null)
+    case a ~ Some(sub) => AttributeOccurrence(a, sub)
   }
 
   // `f` in PSI-Defs

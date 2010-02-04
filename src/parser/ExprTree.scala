@@ -7,7 +7,7 @@ package psic.parser
 
 class ExprTree
 
-class Expression extends ExprTree
+abstract class Expression extends ExprTree
 case class Number(value: Int) extends Expression
 case class AttributeOccurrence(value: String, sub: String) extends Expression
 case class Operator(left: ExprTree, right: ExprTree, op: String) extends Expression

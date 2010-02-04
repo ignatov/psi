@@ -2,7 +2,7 @@ package psic.metamodel
 
 import collection.mutable.HashMap
 import pcis.metamodel._
-import psic.parser._
+import psic.parser.{Package, Relation, Scheme, Task}
 
 /**
  * @author: ignatov
@@ -16,14 +16,26 @@ object Converter {
   /**
    * @param `pack' the package to be converted
    */
-  def run(pack: Package): P = {
+  def run(pack: Package): P = package2P(pack)
+
+  private def package2P(pack: Package): P = {
     val h = new HashMap[String, R]()
     pack.lst foreach (s => h.put(s.name, relation2R(s)))
     P(pack.name, h)
   }
 
-  def relation2R(expr: Relation): R = expr match {
-    case Scheme(name, condition, attributes, fls) => S(name, null, null, null, null, null)
+  private def relation2R(expr: Relation): R = expr match {
+    case Scheme(name, condition, attributes, fls) => {
+      val typeTable = new HashMap[String, T]() //todo: need to copy to S?
+      val attributeTable = new HashMap[String, A]()
+
+      attributes foreach (
+              a => attributeTable.put(a.name, //todo: maybe putOrUpdate?
+                A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
+
+      S(name, null, null, null, null, attributeTable)
+    }
+
     case Task(name, scheme, in, out) => Q(name, null, null)
     case _ => null
   }

@@ -1,31 +1,13 @@
-P Kinematics {
-    S Sp {
-        nat t2, t1, t;
-        bool b1, b2
-        |
-        t <- 10;
-        t1 <- (20 + t + t2 - 100);
-        t2 <- t.d
-    }
-    if t1.x + y then {
-        nat t2, t1, t;
-        bool b1, b2;
-        Sp S1
-        |
-        t <- 10;
-        t1 <- (20 + t + t2 - 100);
-        t2 <- t.d
-    }
-    else
-        t2 <- t.d
-    fi
-    ;
-    Q name {on Sp in t1, t2 out t2, t3}
-    ;
-    S S1 {
-        nat t2;
-        bool b1, b2
-        |
-        t <- 10
-    }
+ P Simple {
+  S Container {
+    nat x
+    |
+    x <- 1
+  };
+  S Simple {
+    Container c1, c2, c
+    |
+    c.x <- c1.x + c2.x
+  };
+  Q task {on Simple in c1, c2 out c}
 }

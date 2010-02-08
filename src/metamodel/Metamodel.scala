@@ -12,7 +12,14 @@ abstract class Metamodel //todo: add inheritors
 /**
  * Package
  */
-case class P(name: String, features: HashMap[String, R])
+case class P(name: String, features: HashMap[String, R]) {
+  override def toString = {
+    val separator = "\n"
+    var s = new StringBuilder()
+    features.foreach(r => s.append(r._1).append(" -> ").append(r._2.toString).append(separator))
+    "P(" + name + separator + s.toString() + ")"
+  }
+}
 
 /**
  * Relation
@@ -33,8 +40,10 @@ case class S(name: String, condition: G, thenBranch: V, elseBranch: V, fls: List
 /**
  * Task
  */
-case class Q(name: String, in: List[N], out: List[N]) extends R {
+case class Q(name: String, scheme: S, in: List[N], out: List[N]) extends R {
   override def getA(attr: String): A = null
+
+  override def toString = "Q(" + name + ", " + scheme.name + ", " + in + ", " + out + ")"
 }
 
 /**

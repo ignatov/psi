@@ -5,9 +5,15 @@ P Simple {
     x <- 1
   };
   S Simple {
-    Container c1, c2, c
+    bool g;
+    Container c1, c2, tmp, c
     |
-    c.x <- c1.x + c2.x
-  };
-  Q task {on Simple in c1, c2 out c}
+    tmp.x <- c1.x + c2.x
+  }
+  if g then
+    c.x <- (tmp + c1.x) * c2.x
+  else
+    c.x <- tmp + (c1.x / c2.x)
+  fi;
+  Q task {on Simple in c1, c2, g out c}
 }

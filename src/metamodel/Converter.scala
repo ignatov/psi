@@ -13,10 +13,11 @@ import collection.mutable.{ArrayBuffer, HashMap}
  * Convert from PSI AST to PSI metamodel
  */
 object Converter {
+  val typeTable = new HashMap[String, T]()
   val relationTable = new HashMap[String, R]()
 
   /**
-   * @param `pack' the package to be converted 
+   * @param pack the package to be converted
    */
   def run(pack: Package): P = package2P(pack)
 
@@ -27,7 +28,6 @@ object Converter {
 
   private def relation2R(expr: Relation): R = expr match {
     case Scheme(name, ifExpr, attributes, fls) => {
-      val typeTable = new HashMap[String, T]() //todo: need to copy to S?
       val attributeTable = new HashMap[String, A]()
       val occurrenceTable = new HashMap[String, N]()
 
@@ -35,8 +35,10 @@ object Converter {
         a => attributeTable(a.name) = A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name))))
 
       val g: G = getCondition(ifExpr, attributeTable, occurrenceTable)
+      val thenV = {if (ifExpr != null) block2V(ifExpr.positive, attributeTable) else null}
+      val elseV = {if (ifExpr != null) block2V(ifExpr.negative, attributeTable) else null}
       val fs: List[F] = fls map (f => fl2F(f, attributeTable, occurrenceTable))
-      S(name, g, null, null, fs, attributeTable, occurrenceTable)
+      S(name, g, thenV, elseV, fs, attributeTable, occurrenceTable)
     }
 
     case Task(name, scheme, in, out) => Q(name, null, null)
@@ -76,5 +78,23 @@ object Converter {
   private def condition2G(condition: Expression, aTable: HashMap[String, A], nTable: HashMap[String, N]): G =
     G(expression2X(condition, aTable, nTable))
 
-  //  private def block2V(block: Block): V = V()
+  /**
+   * @param block the block to convert
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
+   */
+  private def block2V(block: Block, aTable: HashMap[String, A]): V = {
+    val aTableForV: HashMap[String, A] = new HashMap[String, A]()
+//    aTableForV ++ aTable.clone()
+    val nTableForV = new HashMap[String, N]()
+    block.attributes foreach (
+      a => aTableForV.getOrElseUpdate(a.name, A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
+
+    var as = new HashMap[String, A]()
+    as ++= aTable
+    as ++= aTableForV
+    val fs: List[F] = block.fls map (f => fl2F(f, as, nTableForV))
+
+    return V(fs, aTableForV, nTableForV)
+  }
 }

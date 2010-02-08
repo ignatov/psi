@@ -6,12 +6,16 @@ P Simple {
   };
   S Simple {
     bool g;
-    Container c1, c2, tmp, c
+    Container cond, c1, c2, tmp, c
     |
     tmp.x <- c1.x + c2.x
   }
-  if g then
-    c.x <- (tmp + c1.x) * c2.x
+  if cond.x > 0 then {
+    nat i
+    |
+    i <- 2;
+    c.x <- (tmp + c1.x) * c2.x * i
+  }
   else
     c.x <- tmp + (c1.x / c2.x)
   fi;

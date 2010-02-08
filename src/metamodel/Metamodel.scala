@@ -57,7 +57,7 @@ case class N(name: A, surname: A, left: ArrayBuffer[F], right: ArrayBuffer[F]) {
 /**
  * Variant part
  */
-case class V(scheme: S, fls: List[F], features: HashMap[String, A])
+case class V(fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N])
 
 /**
  * Functional link

@@ -37,8 +37,8 @@ class PSIParser extends JavaTokenParsers {
   def F: Parser[FL] = (n <~ "<-") ~ X ^^ {case result ~ implementation => FL(result, implementation)}
 
   def Y: Parser[Expression] = (wholeNumber ^^ {x => Number(x.toInt)}
-          | n
-          | "(" ~> X <~ ")")
+    | n
+    | "(" ~> X <~ ")")
 
   def X: Parser[Expression] = (Y ~ rep(op ~ Y)) ^^ {
     case a ~ lst => (a /: lst) {

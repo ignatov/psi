@@ -21,7 +21,7 @@ case class Operator(left: Expression, right: Expression, op: String) extends Exp
 
 abstract case class Relation(name: String) extends ExprTree
 case class Scheme(override val name: String, condition: IfExpr, attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
-case class Task(override val name: String, scheme: String, in: List[ExprTree], out: List[ExprTree]) extends Relation(name)
+case class Task(override val name: String, scheme: String, in: List[AttributeOccurrence], out: List[AttributeOccurrence]) extends Relation(name)
 
 case class Package(name: String, lst: List[Relation]) extends ExprTree
 case class Block(attributes: List[AttributeDef], fls: List[FL]) extends ExprTree

@@ -41,7 +41,7 @@ object Converter {
       S(name, g, thenV, elseV, fs, attributeTable, occurrenceTable)
     }
 
-    case Task(name, scheme, in, out) => Q(name, null, null)
+    case task: Task => task2Q(task)
     case _ => null
   }
 
@@ -85,8 +85,8 @@ object Converter {
    */
   private def block2V(block: Block, aTable: HashMap[String, A]): V = {
     val aTableForV: HashMap[String, A] = new HashMap[String, A]()
-//    aTableForV ++ aTable.clone()
     val nTableForV = new HashMap[String, N]()
+
     block.attributes foreach (
       a => aTableForV.getOrElseUpdate(a.name, A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
 
@@ -96,5 +96,14 @@ object Converter {
     val fs: List[F] = block.fls map (f => fl2F(f, as, nTableForV))
 
     return V(fs, aTableForV, nTableForV)
+  }
+
+  /**
+   * @param task the task to convert
+   */
+  private def task2Q(task: Task): Q = {
+    val s = relationTable(task.scheme).asInstanceOf[S]
+
+    Q(task.name, s, null, null)
   }
 }

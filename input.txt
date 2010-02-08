@@ -1,4 +1,4 @@
- P Simple {
+P Simple {
   S Container {
     nat x
     |

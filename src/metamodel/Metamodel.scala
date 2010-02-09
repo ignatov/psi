@@ -1,5 +1,6 @@
 package pcis.metamodel
 
+import compat.Platform.EOL
 import collection.mutable.{ArrayBuffer, HashMap}
 
 /**
@@ -13,12 +14,8 @@ abstract class Metamodel //todo: add inheritors
  * Package
  */
 case class P(name: String, relations: Map[String, R]) {
-  override def toString = {
-    val separator = "\n"
-    var s = new StringBuilder()
-    relations.foreach(r => s.append(r._1).append(" -> ").append(r._2.toString).append(separator))
-    "P(" + name + separator + s.toString() + ")"
-  }
+  override def toString =
+    "P(" + name + EOL + "  " + (relations.toList map (x => x._1 + " -> " + x._2)).mkString(EOL + "  ") + EOL + ")"
 }
 
 /**

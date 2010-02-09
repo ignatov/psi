@@ -5,7 +5,6 @@ P Simple {
     x <- 1
   };
   S Simple {
-    bool g;
     Container cond, c1, c2, tmp, c
     |
     tmp.x <- c1.x + c2.x
@@ -19,5 +18,5 @@ P Simple {
   else
     c.x <- tmp + (c1.x / c2.x)
   fi;
-  Q task {on Simple in c1, c2, g out c}
+  Q task {on Simple in c1, c2 out c}
 }

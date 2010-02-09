@@ -8,12 +8,15 @@ import collection.mutable.{ArrayBuffer, HashMap}
  * Date:    04.02.2010
  */
 
-abstract class Metamodel //todo: add inheritors 
+/**
+ * Base class for metamodel classes. May be need for converter or printer.
+ */
+abstract class Metamodel
 
 /**
  * Package
  */
-case class P(name: String, relations: Map[String, R]) {
+case class P(name: String, relations: Map[String, R]) extends Metamodel {
   override def toString =
     "P(" + name + EOL + "  " + (relations.toList map (x => x._1 + " -> " + x._2)).mkString(EOL + "  ") + EOL + ")"
 }
@@ -21,7 +24,7 @@ case class P(name: String, relations: Map[String, R]) {
 /**
  * Relation
  */
-trait R {
+trait R extends Metamodel {
   def name: String
 
   def getA(attr: String): A
@@ -46,38 +49,38 @@ case class Q(name: String, scheme: S, in: List[N], out: List[N]) extends R {
 /**
  * Guard
  */
-case class G(expr: X)
+case class G(expr: X) extends Metamodel
 
 /**
  * Attribute
  */
-case class A(name: String, t: T)
+case class A(name: String, t: T) extends Metamodel
 
 /**
  * Attribute occurrence
  */
-case class N(name: A, surname: A, left: ArrayBuffer[F], right: ArrayBuffer[F]) {
+case class N(name: A, surname: A, left: ArrayBuffer[F], right: ArrayBuffer[F]) extends Metamodel {
   def attrName = name.name + {if (surname != null) "." + surname.name else ""}
 }
 
 /**
  * Variant part
  */
-case class V(fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N])
+case class V(fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N]) extends Metamodel
 
 /**
  * Functional link
  */
-case class F(expr: X, res: N) {
+case class F(expr: X, res: N) extends Metamodel {
   override def toString = res.attrName + " <- " + expr.impl
 }
 
 /**
  * Expression
  */
-case class X(impl: String, args: List[N])
+case class X(impl: String, args: List[N]) extends Metamodel
 
 /**
  * Type
  */
-case class T(name: String)
+case class T(name: String) extends Metamodel

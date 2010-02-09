@@ -62,8 +62,8 @@ object Converter {
 
   /**
    * @param ifExpr
-   * @param aTable
-   * @param nTable
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
    */
   private def getCondition(ifExpr: IfExpr, aTable: HashMap[String, A], nTable: HashMap[String, N]): G = ifExpr match {
     case null => null
@@ -80,6 +80,11 @@ object Converter {
     case Operator(left, right, op) => getOccurrences(left) ::: getOccurrences(right)
   }
 
+  /**
+   * @param n the attribute occurrence to convert
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
+   */
   private def occurrence2N(n: AttributeOccurrence, aTable: HashMap[String, A], nTable: HashMap[String, N]): N = n match {
     case AttributeOccurrence(attr, null) =>
       nTable.getOrElseUpdate(n.toString,
@@ -89,9 +94,19 @@ object Converter {
         N(aTable(attr), schemeTable(aTable(attr).t.name).getA(sub), new ArrayBuffer[F], new ArrayBuffer[F]))
   }
 
+  /**
+   * @param e the expression to convert
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
+   */
   private def expression2X(e: Expression, aTable: HashMap[String, A], nTable: HashMap[String, N]): X =
     X(e toString, getOccurrences(e) map (n => occurrence2N(n, aTable, nTable)))
 
+  /**
+   * @param fl the functional link to convert
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
+   */
   private def fl2F(fl: FL, aTable: HashMap[String, A], nTable: HashMap[String, N]): F = {
     val result = F(expression2X(fl.implementation, aTable, nTable), occurrence2N(fl.result, aTable, nTable))
     result.res.left += result
@@ -99,6 +114,11 @@ object Converter {
     return result
   }
 
+  /**
+   * @param condition the condition to convert
+   * @param aTable the attributes table from parent scheme
+   * @param nTable the attributes occurrences table from parent scheme
+   */
   private def condition2G(condition: Expression, aTable: HashMap[String, A], nTable: HashMap[String, N]): G =
     G(expression2X(condition, aTable, nTable))
 

@@ -14,42 +14,66 @@ import collection.mutable.{ArrayBuffer, HashMap}
  */
 object Converter {
   val typeTable = new HashMap[String, T]()
-  val relationTable = new HashMap[String, R]()
+  val schemeTable = new HashMap[String, S]()
+  val taskTable = new HashMap[String, Q]()
 
   /**
    * @param pack the package to be converted
    */
   def run(pack: Package): P = package2P(pack)
 
+  /**
+   * @param pack the package to convert
+   */
   private def package2P(pack: Package): P = {
-    pack.lst foreach (s => relationTable.put(s.name, relation2R(s)))
-    P(pack.name, relationTable)
+    pack.lst foreach (r => r match {
+      case r: Scheme => schemeTable.put(r.name, scheme2S(r))
+      case r: Task => taskTable.put(r.name, task2Q(r))
+    })
+    P(pack.name, Map[String, R]() ++ schemeTable ++ taskTable)
   }
 
-  private def relation2R(expr: Relation): R = expr match {
-    case Scheme(name, ifExpr, attributes, fls) => {
-      val attributeTable = new HashMap[String, A]()
-      val occurrenceTable = new HashMap[String, N]()
+  /**
+   * @param scheme the scheme to convert
+   */
+  private def scheme2S(scheme: Scheme): S = {
+    val attributeTable = new HashMap[String, A]()
+    val occurrenceTable = new HashMap[String, N]()
 
-      attributes foreach (
-        a => attributeTable(a.name) = A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name))))
+    scheme.attributes foreach (
+      a => attributeTable(a.name) = A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name))))
 
-      val g: G = getCondition(ifExpr, attributeTable, occurrenceTable)
-      val thenV = {if (ifExpr != null) block2V(ifExpr.positive, attributeTable) else null}
-      val elseV = {if (ifExpr != null) block2V(ifExpr.negative, attributeTable) else null}
-      val fs: List[F] = fls map (f => fl2F(f, attributeTable, occurrenceTable))
-      S(name, g, thenV, elseV, fs, attributeTable, occurrenceTable)
-    }
+    val g: G = getCondition(scheme.condition, attributeTable, occurrenceTable)
+    val thenV = {if (scheme.condition != null) block2V(scheme.condition.positive, attributeTable) else null}
+    val elseV = {if (scheme.condition != null) block2V(scheme.condition.negative, attributeTable) else null}
+    val fs: List[F] = scheme.fls map (f => fl2F(f, attributeTable, occurrenceTable))
 
-    case task: Task => task2Q(task)
-    case _ => null
+    S(scheme.name, g, thenV, elseV, fs, attributeTable, occurrenceTable)
   }
 
+  /**
+   * @param task the task to convert
+   */
+  private def task2Q(task: Task): Q = {
+    val s = schemeTable(task.scheme)
+
+    Q(task.name, s, null, null)
+  }
+
+  /**
+   * @param ifExpr
+   * @param aTable
+   * @param nTable
+   */
   private def getCondition(ifExpr: IfExpr, aTable: HashMap[String, A], nTable: HashMap[String, N]): G = ifExpr match {
     case null => null
     case i => condition2G(i.condition, aTable, nTable)
   }
 
+  /**
+   * Recursive routine witch get occurrences from expression.
+   * @param expr the input expression
+   */
   private def getOccurrences(expr: Expression): List[AttributeOccurrence] = expr match {
     case AttributeOccurrence(attr, sub) => List(AttributeOccurrence(attr, sub))
     case Number(_) => Nil
@@ -62,7 +86,7 @@ object Converter {
         N(aTable(attr), null, new ArrayBuffer[F], new ArrayBuffer[F]))
     case AttributeOccurrence(attr, sub) =>
       nTable.getOrElseUpdate(n.toString,
-        N(aTable(attr), relationTable(aTable(attr).t.name).getA(sub), new ArrayBuffer[F], new ArrayBuffer[F]))
+        N(aTable(attr), schemeTable(aTable(attr).t.name).getA(sub), new ArrayBuffer[F], new ArrayBuffer[F]))
   }
 
   private def expression2X(e: Expression, aTable: HashMap[String, A], nTable: HashMap[String, N]): X =
@@ -81,11 +105,10 @@ object Converter {
   /**
    * @param block the block to convert
    * @param aTable the attributes table from parent scheme
-   * @param nTable the attributes occurrences table from parent scheme
    */
   private def block2V(block: Block, aTable: HashMap[String, A]): V = {
-    val aTableForV: HashMap[String, A] = new HashMap[String, A]()
-    val nTableForV = new HashMap[String, N]()
+    val aTableForV = new HashMap[String, A]()
+    val nTableForV = new HashMap[String, N]() //todo: @param nTable the attributes occurrences table from parent scheme
 
     block.attributes foreach (
       a => aTableForV.getOrElseUpdate(a.name, A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))
@@ -96,14 +119,5 @@ object Converter {
     val fs: List[F] = block.fls map (f => fl2F(f, as, nTableForV))
 
     return V(fs, aTableForV, nTableForV)
-  }
-
-  /**
-   * @param task the task to convert
-   */
-  private def task2Q(task: Task): Q = {
-    val s = relationTable(task.scheme).asInstanceOf[S]
-
-    Q(task.name, s, null, null)
   }
 }

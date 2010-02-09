@@ -12,11 +12,11 @@ abstract class Metamodel //todo: add inheritors
 /**
  * Package
  */
-case class P(name: String, features: HashMap[String, R]) {
+case class P(name: String, relations: Map[String, R]) {
   override def toString = {
     val separator = "\n"
     var s = new StringBuilder()
-    features.foreach(r => s.append(r._1).append(" -> ").append(r._2.toString).append(separator))
+    relations.foreach(r => s.append(r._1).append(" -> ").append(r._2.toString).append(separator))
     "P(" + name + separator + s.toString() + ")"
   }
 }

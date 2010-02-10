@@ -25,8 +25,8 @@ class PSIParser extends JavaTokenParsers {
   // `R` in PSI-Defs
   def rel: Parser[Relation] = Q | S
 
-  def i: Parser[IfExpr] = ("if" ~> G) ~ ("then" ~> V) ~ ("else" ~> V) <~ "fi" ^^ {
-    case condition ~ positive ~ negative => IfExpr(condition, positive, negative)
+  def i: Parser[IfStatement] = ("if" ~> G) ~ ("then" ~> V) ~ ("else" ~> V) <~ "fi" ^^ {
+    case condition ~ positive ~ negative => IfStatement(condition, positive, negative)
   }
 
   def S: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ~ opt(i) ^^ {

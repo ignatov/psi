@@ -65,7 +65,7 @@ object Converter {
    * @param aTable the attributes table from parent scheme
    * @param nTable the attributes occurrences table from parent scheme
    */
-  private def getCondition(ifExpr: IfExpr, aTable: HashMap[String, A], nTable: HashMap[String, N]): G = ifExpr match {
+  private def getCondition(ifExpr: IfStatement, aTable: HashMap[String, A], nTable: HashMap[String, N]): G = ifExpr match {
     case null => null
     case i => condition2G(i.condition, aTable, nTable)
   }

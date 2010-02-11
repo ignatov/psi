@@ -13,10 +13,10 @@ P Simple {
     nat i
     |
     i <- 2;
-    c.x <- (tmp + c1.x) * c2.x * i
+    c.x <- (tmp.x + c1.x) * c2.x * i
   }
   else
-    c.x <- tmp + (c1.x / c2.x)
+    c.x <- tmp.x + (c1.x / c2.x)
   fi;
   Q task {on Simple in c1.x, c2.x out tmp.x}
 }

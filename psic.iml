@@ -3,6 +3,7 @@
   <component name="FacetManager">
     <facet type="Scala" name="Scala">
       <configuration>
+        <option name="takeFromSettings" value="true" />
         <option name="myScalaCompilerJarPaths">
           <array>
             <option value="$MODULE_DIR$/lib/scala-compiler.jar" />
@@ -26,6 +27,9 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="scala-2.7.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-library:2.7.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.scala-lang:scala-compiler:2.7.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
   </component>
 </module>
 

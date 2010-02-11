@@ -18,9 +18,10 @@ object Converter {
   val taskTable = new HashMap[String, Q]()
 
   /**
-   * @param pack the package to be converted
+   * Convert AST package to P class from metamodel
+   * @param pack the package to convert
    */
-  def run(pack: Package): P = package2P(pack)
+  def convert(pack: Package): P = package2P(pack)
 
   /**
    * @param pack the package to convert

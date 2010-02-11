@@ -14,7 +14,6 @@ object PSICompiler {
     val parser = new PSIParser
     var input = fromFile("input.txt") mkString
     val result = parser.parse(parser.P, input).get
-    println(result)
-    println(Converter run result)
+    println(Converter convert result)
   }
 }

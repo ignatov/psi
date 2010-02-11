@@ -57,9 +57,9 @@ case class S(name: String, condition: G, thenBranch: V, elseBranch: V, fls: List
  */
 case class Q(name: String, scheme: S, in: List[N], out: List[N]) extends R {
   override def toString = "Q(" + name + EOL +
-    indent * 2 + scheme.name + EOL +
-    indent * 2 + in + EOL +
-    indent * 2 + out + EOL +
+    indent * 2 + "shm:   " + scheme.name + EOL +
+    indent * 2 + "in:  " + in.mkString(", ") + EOL +
+    indent * 2 + "out: " + out.mkString(", ") + EOL +
     indent + ")"
 }
 

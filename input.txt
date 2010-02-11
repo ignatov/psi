@@ -18,5 +18,5 @@ P Simple {
   else
     c.x <- tmp + (c1.x / c2.x)
   fi;
-  Q task {on Simple in c1, c2 out c}
+  Q task {on Simple in c1.x, c2.x out tmp.x}
 }

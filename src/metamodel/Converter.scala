@@ -57,7 +57,7 @@ object Converter {
   private def task2Q(task: Task): Q = {
     val s = schemeTable(task.scheme)
 
-    Q(task.name, s, null, null)
+    Q(task.name, s, task.in map (n => s.getN(n.toString)), task.out map (n => s.getN(n.toString)))
   }
 
   /**
@@ -128,7 +128,7 @@ object Converter {
    */
   private def block2V(block: Block, aTable: HashMap[String, A]): V = {
     val aTableForV = new HashMap[String, A]()
-    val nTableForV = new HashMap[String, N]() //todo: @param nTable the attributes occurrences table from parent scheme
+    val nTableForV = new HashMap[String, N]()
 
     block.attributes foreach (
       a => aTableForV.getOrElseUpdate(a.name, A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name)))))

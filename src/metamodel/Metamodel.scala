@@ -26,23 +26,20 @@ case class P(name: String, relations: Map[String, R]) extends Metamodel {
  */
 trait R extends Metamodel {
   def name: String
-
-  def getA(attr: String): A
 }
 
 /**
  * Scheme
  */
 case class S(name: String, condition: G, thenBranch: V, elseBranch: V, fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N]) extends R {
-  override def getA(attr: String): A = aTable(attr)
+  def getA(attr: String): A = aTable(attr)
+  def getN(attr: String): N = nTable(attr)
 }
 
 /**
  * Task
  */
 case class Q(name: String, scheme: S, in: List[N], out: List[N]) extends R {
-  override def getA(attr: String): A = null
-
   override def toString = "Q(" + name + ", " + scheme.name + ", " + in + ", " + out + ")"
 }
 

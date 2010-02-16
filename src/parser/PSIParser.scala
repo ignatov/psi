@@ -11,7 +11,7 @@ import util.parsing.combinator._
  * Parser for PSI language.
  * PSI Grammar from PSI-Defs.doc
  */
-class PSIParser extends JavaTokenParsers {
+object PSIParser extends JavaTokenParsers {
   /**
    * Primitive type
    */

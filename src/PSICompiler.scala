@@ -12,9 +12,8 @@ import psic.metamodel.Converter
 object PSICompiler {
   def main(args: Array[String]): Unit = {
     if (args.length == 1) {
-      val parser = new PSIParser
-      var input = fromFile(args(0)) mkString
-      val result = parser.parse(parser.P, input).get
+      val input = fromFile(args(0)) mkString
+      val result = PSIParser.parse(PSIParser.P, input).get
       println(Converter convert result)
     }
     else {

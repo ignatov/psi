@@ -1,4 +1,4 @@
-package pcis.metamodel
+package psic.metamodel
 
 import compat.Platform.EOL
 import collection.mutable.{ArrayBuffer, HashMap}

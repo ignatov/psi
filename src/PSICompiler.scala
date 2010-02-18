@@ -12,12 +12,13 @@ import psic.metamodel.Converter
 object PSICompiler {
   def main(args: Array[String]): Unit = {
     if (args.length == 1) {
-      val input = fromFile(args(0)) mkString
-      val result = PSIParser.parse(PSIParser.P, input).get
-      println(Converter convert result)
+      val parseResult = PSIParser.parse(PSIParser.P, fromFile(args(0)) mkString)
+      if (!parseResult.successful)
+        println(parseResult)
+      else
+        println(Converter convert parseResult.get)
     }
-    else {
+    else
       Console.err.println("Please enter filename")
-    }
   }
 }

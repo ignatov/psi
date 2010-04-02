@@ -3,8 +3,8 @@ package psic.parser
 import util.parsing.combinator._
 
 /**
- * @author: ignatov
- * Date:    04.02.2010
+ * User: ignatov
+ * Date: 04.02.2010
  */
 
 /**

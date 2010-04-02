@@ -5,8 +5,8 @@ import psic.parser.PSIParser
 import psic.metamodel.Converter
 
 /**
- * @author: ignatov
- * Date:    04.02.2010
+ * User: ignatov
+ * Date: 04.02.2010
  */
 
 object PSICompiler {

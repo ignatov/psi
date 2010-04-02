@@ -1,12 +1,11 @@
 package psic.metamodel
 
-import pcis.metamodel._
 import psic.parser._
 import collection.mutable.{ArrayBuffer, HashMap}
 
 /**
- * @author: ignatov
- * Date:    04.02.2010
+ * User: ignatov
+ * Date: 04.02.2010
  */
 
 /**

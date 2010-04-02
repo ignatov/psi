@@ -5,8 +5,8 @@ import collection.mutable.{ArrayBuffer, HashMap}
 import java.lang.String
 
 /**
- * @author: ignatov
- * Date:    04.02.2010
+ * User: ignatov
+ * Date: 04.02.2010
  */
 
 /**

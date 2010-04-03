@@ -1,5 +1,6 @@
 package psi.synthesizer.datastructs
 
+import compat.Platform.EOL
 import psi.compiler.metamodel.N
 
 /**
@@ -7,4 +8,15 @@ import psi.compiler.metamodel.N
  * Date: 03.04.2010
  */
 
-case class Procedure(name: String, input: List[N], output: List[N], steps: List[ProofStep])
+case class Procedure(name: String, input: List[N], output: List[N], steps: List[ProofStep]) {
+  val indent: String = "  ";
+  override def toString: String = {
+    "Procedure(" + EOL +
+      indent + name + EOL +
+      indent + "in:  " + input.map((x: N) => x.name.name).mkString(", ") + EOL +
+      indent + "out: " + output.map((x: N) => x.name.name).mkString(", ") + EOL +
+      indent + "st:  " + steps + EOL +
+      ")"
+
+  }
+}

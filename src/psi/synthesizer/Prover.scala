@@ -2,17 +2,17 @@ package psi.synthesizer
 
 import datastructs.{ProofStep, Procedure}
 import collection.mutable.ArrayBuffer
-import psi.compiler.metamodel.{S, F, N, Q}
+import psi.compiler.metamodel.{F, N, Q}
 
 /**
  * User: ignatov
  * Date: 03.04.2010
  */
 
-object Prover {
-  var reachedList = new ArrayBuffer[N]()
-  var unreachedList = new ArrayBuffer[N]()
-  var G = new ArrayBuffer[F]()
+class Prover {
+  var reached = new ArrayBuffer[N]()
+  var unreached = new ArrayBuffer[N]()
+  var functions = new ArrayBuffer[F]()
 
   def doProof(task: Q): Procedure = {
     val input = task.in
@@ -20,32 +20,38 @@ object Prover {
 
     var proofSteps = new ArrayBuffer[ProofStep]()
 
-    reachedList appendAll input
-    unreachedList appendAll output
+    unreached appendAll output
 
-    for (a <- input) {
-      processAttribute(task.scheme, a)
-      if (unreachedList contains a)
-        unreachedList remove (unreachedList indexOf a)
-      proofSteps append (new ProofStep(null, a))
+    for (a <- input)
+      process(a)
+
+    while (unreached.length > 0) {
+      if (functions.length == 0)
+        return new Procedure("failed", input, output, proofSteps.toList)
+
+      val f = functions remove 0
+      val result = f.res
+
+      process(result)
+
+      proofSteps append (new ProofStep(f, result))
     }
-
-
-//    while (unreachedList.length > 0) {
-//
-//    }
 
     new Procedure(task.name, input, output, proofSteps.toList)
   }
 
-  def processAttribute(scheme: S, a: N): Unit = {
-    for (f: F <- a.right) {
-      if (reachedList.toList.union(f.expr.args).length == reachedList.length)
-        G.append(f)
-    }
+  def process(a: N): Unit = {
+    reached append a
 
-    for (f: F <- a.left) {
-      G.remove(G.indexOf(f))
-    }
+    for (f: F <- a.right)
+      if (reached.toList.union(f.expr.args).length == reached.length)
+        functions append f
+
+    for (f: F <- a.left)
+      if (functions.contains(f))
+        functions.remove(functions indexOf f)
+
+    if (unreached contains a)
+      unreached remove (unreached indexOf a)
   }
 }

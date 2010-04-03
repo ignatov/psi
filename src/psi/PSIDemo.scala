@@ -21,7 +21,7 @@ object PSIDemo {
 
         for (val relation <- pack.relations.values) {
           relation match {
-            case task: Q => println(Prover doProof task)
+            case task: Q => println(new Prover doProof task)
             case _ =>
           }
         }

@@ -1,0 +1,11 @@
+P Simple {
+  S Simple {
+    nat a, b, c
+    |
+    a <- b + c;
+    b <- c * 2
+  };
+  Q find_a {on Simple in c out a};
+  Q find_b {on Simple in c out b};
+  Q find_c {on Simple in c out c}
+}

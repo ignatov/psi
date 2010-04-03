@@ -1,6 +1,6 @@
-package psic.metamodel
+package psi.compiler.metamodel
 
-import psic.parser._
+import psi.compiler.parser._
 import collection.mutable.{ArrayBuffer, HashMap}
 
 /**

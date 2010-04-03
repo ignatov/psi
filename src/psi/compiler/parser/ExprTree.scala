@@ -1,4 +1,4 @@
-package psic.parser
+package psi.compiler.parser
 
 /**
  * User: ignatov

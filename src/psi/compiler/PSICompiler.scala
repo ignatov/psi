@@ -1,8 +1,8 @@
-package psic
+package psi.compiler
 
+import metamodel.Converter
+import parser.PSIParser
 import scala.io.Source.fromFile
-import psic.parser.PSIParser
-import psic.metamodel.Converter
 
 /**
  * User: ignatov

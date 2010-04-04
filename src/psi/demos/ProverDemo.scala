@@ -1,7 +1,7 @@
-package psi
+package psi.demos
 
-import psi.compiler.parser.PSIParser
 import scala.io.Source.fromFile
+import psi.compiler.parser.PSIParser
 import psi.compiler.metamodel.{Q, P, Converter}
 import psi.synthesizer.Prover
 

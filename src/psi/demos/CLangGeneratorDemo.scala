@@ -23,7 +23,7 @@ object CLangGeneratorDemo {
     val pack: P = Converter convert parseResult.get
     for (val relation <- pack.relations.values) {
       relation match {
-        case task: Q => println(new CLangGenerator generate (new Prover doProof task))
+        case task: Q => println((new CLangGenerator generate (new Prover doProof task)) + "-" * 20)
         case _ =>
       }
     }

@@ -1,8 +1,10 @@
 package psi.gererator
 
+import _root_.java.lang.String
+import _root_.psi.compiler.metamodel.{S, A, N}
 import compat.Platform.EOL
 import psi.synthesizer.datastructs.{ProofStep, Procedure}
-import psi.compiler.metamodel.{A, N}
+import collection.mutable.HashSet
 
 /**
  * User: ignatov
@@ -13,21 +15,78 @@ import psi.compiler.metamodel.{A, N}
  * Generator for C language
  */
 class CLangGenerator extends Generator {
+  var schemesToGenerate = new HashSet[String]()
+
+  val typeMap = Map(
+    "bool" -> "int",
+    "nat" -> "int",
+    "int" -> "int",
+    "string" -> "char*",
+    "real" -> "double"
+    )
+
   override def generate(procedure: Procedure): String = {
     val output: A = procedure.output(0).name
-    val outputDef: String = output.t.name + " " + output.name + ";"
+    val outputDef: String = typeMap(output.t.name) + " " + output.name + ";"
 
-    generateHeader +
-      generateProcedure(procedure) +
+    generateHeader() + EOL +
+      generateStructures(procedure) + EOL +
+      generateProcedure(procedure) + EOL +
       "int main(int argc, char *argv[]) {" + EOL +
       indent + outputDef + EOL +
       indent + output.name + " = " + procedure.name + "(" + inputs(procedure) + ");" + EOL +
+      indent + "return 0;" + EOL + 
       "}" + EOL
   }
 
-  def generateHeader(): String = "#include<stdlib.h>" + EOL * 2
+  def generateHeader(): String = "#include<stdlib.h>" + EOL
 
-  def inputs(procedure: Procedure): String = procedure.input.map((x: N) => x.name.t.name + " " + x.name.name).mkString(", ")
+  def generateStructures(procedure: Procedure): String = {
+    def addAttributeType(attributeOccurrence: N): Unit = {
+      val attribute: A = attributeOccurrence.name
+      val typename: String = attribute.t.name
+      if (!typeMap.keys.contains(typename))
+        schemesToGenerate += typename
+    }
+
+    for (step: ProofStep <- procedure.steps) {
+      addAttributeType(step.reachedAttribute)
+      addAttributeType(step.fl.res)
+      step.fl.expr.args.map(addAttributeType)
+    }
+
+    def scheme2Structure(schemeName: String): String = {
+
+      val relation = procedure.pack.relations(schemeName)
+      relation match {
+        case scheme: S => {
+          "typedef struct {" + EOL +
+            scheme.aTable.values.map(
+            (a:A) => {indent + typeMap(a.t.name) + " " + a.name}
+              ).mkString(";" + EOL) + finishSemicolon(scheme.aTable.values.toList) +
+          "} " + scheme.name + ";"
+        }
+        case _ => ""
+      }
+
+    }
+
+    schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL
+  }
+
+  def inputs(procedure: Procedure): String = procedure.input.map(variableForFunctionDeclaration).mkString(", ")
+
+  def variableForFunctionDeclaration(x: N): String = {
+    val attrName = x.name.name + {if (x.surname != null) "_" + x.surname.name else ""}
+    val typeName = {
+      if (x.surname == null)
+        typeMap(x.name.t.name)
+      else
+        typeMap(x.surname.t.name)
+    }
+
+    typeName + " " + attrName
+  }
 
   def finishSemicolon(list: List[Any]): String = {
     if (list.length == 0)
@@ -38,17 +97,17 @@ class CLangGenerator extends Generator {
   def generateProcedure(procedure: Procedure): String = {
     val result: A = procedure.output(0).name
 
-    result.t.name + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
+    typeMap(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
       procedure.steps.map(
         (x: ProofStep) => {
           if (!procedure.input.contains(x.fl.res))
-            indent + x.fl.res.name.t.name + " " + x.fl.res.attrName + ";" + EOL
+            indent + typeMap(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
           else
             ""
         }
         ).mkString("") + EOL +
-      procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + x.fl.expr.impl).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
+      procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + (x.fl.expr.impl).replace(".", "_")).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
       indent + "return " + result.name + ";" + EOL +
-      "}" + EOL * 2
+      "}" + EOL
   }
 }

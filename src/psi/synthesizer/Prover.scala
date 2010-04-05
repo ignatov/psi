@@ -1,9 +1,8 @@
 package psi.synthesizer
 
+import _root_.psi.compiler.metamodel.{P, F, N, Q}
 import datastructs.{ProofStep, Procedure}
 import collection.mutable.ArrayBuffer
-import psi.compiler.metamodel.{F, N, Q}
-
 /**
  * User: ignatov
  * Date: 03.04.2010
@@ -14,7 +13,7 @@ class Prover {
   var unreached = new ArrayBuffer[N]()
   var functions = new ArrayBuffer[F]()
 
-  def doProof(task: Q): Procedure = {
+  def doProof(pack: P, task: Q): Procedure = {
     val input = task.in
     val output = task.out
 
@@ -27,7 +26,7 @@ class Prover {
 
     while (unreached.length > 0) {
       if (functions.length == 0)
-        return new Procedure("failed", input, output, proofSteps.toList)
+        return new Procedure("failed", pack, input, output, proofSteps.toList)
 
       val f = functions remove 0
       val result = f.res
@@ -37,7 +36,7 @@ class Prover {
       proofSteps append (new ProofStep(f, result))
     }
 
-    new Procedure(task.name, input, output, proofSteps.toList)
+    new Procedure(task.name, pack, input, output, proofSteps.toList)
   }
 
   def process(a: N): Unit = {

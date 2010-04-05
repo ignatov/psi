@@ -1,14 +1,14 @@
 package psi.synthesizer.datastructs
 
+import _root_.psi.compiler.metamodel.{P, N}
 import compat.Platform.EOL
-import psi.compiler.metamodel.N
 
 /**
  * User: ignatov
  * Date: 03.04.2010
  */
 
-case class Procedure(name: String, input: List[N], output: List[N], steps: List[ProofStep]) {
+case class Procedure(name: String, pack: P, input: List[N], output: List[N], steps: List[ProofStep]) {
   val indent: String = "  ";
   override def toString: String = {
     "Procedure(" + EOL +

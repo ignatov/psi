@@ -11,7 +11,7 @@ import psi.gererator.CLangGenerator
  */
 
 object CLangGeneratorDemo {
-    def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     if (args.length != 1)
       return Console.err.println("Please enter filename")
 
@@ -23,7 +23,7 @@ object CLangGeneratorDemo {
     val pack: P = Converter convert parseResult.get
     for (val relation <- pack.relations.values) {
       relation match {
-        case task: Q => println((new CLangGenerator generate (new Prover doProof task)) + "-" * 20)
+        case task: Q => println((new CLangGenerator generate (new Prover doProof(pack, task))) + "-" * 20)
         case _ =>
       }
     }

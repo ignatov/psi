@@ -1,0 +1,21 @@
+P Pack {
+  S Complex {
+    real x, y, r, phi
+    |
+    x <- r * phi;
+    y <- r * phi
+  };
+  S Simple {
+    Complex z1, z2;
+    real a, b, c
+    |
+    a <- z1.x + z1.y;
+    b <- z2.x + z2.y;
+    c <- a + b
+  };
+  Q task {
+    on Simple
+    in z1.x, z1.y, z2.x, z2.y 
+    out c
+  }
+}

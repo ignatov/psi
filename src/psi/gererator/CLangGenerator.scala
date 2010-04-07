@@ -1,7 +1,6 @@
 package psi.gererator
 
-import _root_.java.lang.String
-import _root_.psi.compiler.metamodel.{S, A, N}
+import psi.compiler.metamodel.{S, A, N}
 import compat.Platform.EOL
 import psi.synthesizer.datastructs.{ProofStep, Procedure}
 import collection.mutable.HashSet

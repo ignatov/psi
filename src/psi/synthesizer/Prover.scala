@@ -1,8 +1,9 @@
 package psi.synthesizer
 
-import _root_.psi.compiler.metamodel.{P, F, N, Q}
-import datastructs.{ProofStep, Procedure}
+import psi.compiler.metamodel.{P, F, N, Q}
 import collection.mutable.ArrayBuffer
+import datastructs.{ProofStep, Procedure}
+
 /**
  * User: ignatov
  * Date: 03.04.2010
@@ -33,7 +34,7 @@ class Prover {
 
       process(result)
 
-      proofSteps append (new ProofStep(f, result))
+      proofSteps append (new ProofStep(f, result, null))
     }
 
     new Procedure(task.name, pack, input, output, proofSteps.toList)

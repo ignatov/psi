@@ -9,5 +9,8 @@ import psi.synthesizer.datastructs.Procedure
 
 trait Generator {
   protected val indent: String = "  ";
+
+  val typeMap: Map[String, String]
+
   def generate(procedure: Procedure): String
 }

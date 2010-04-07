@@ -14,9 +14,9 @@ import collection.mutable.HashSet
  * Generator for C language
  */
 class CLangGenerator extends Generator {
-  var schemesToGenerate = new HashSet[String]()
+  private var schemesToGenerate = new HashSet[String]()
 
-  val typeMap = Map(
+  override val typeMap = Map(
     "bool" -> "int",
     "nat" -> "int",
     "int" -> "int",
@@ -24,12 +24,11 @@ class CLangGenerator extends Generator {
     "real" -> "double"
     )
 
-
   override def generate(procedure: Procedure): String = {
     generateHeader() +
-    generateStructures(procedure) +
-    generateProcedure(procedure) +
-    generateMain(procedure)
+      generateStructures(procedure) +
+      generateProcedure(procedure) +
+      generateMain(procedure)
   }
 
   private def generateMain(procedure: Procedure): String = {
@@ -43,14 +42,16 @@ class CLangGenerator extends Generator {
       "}" + EOL
   }
 
-  private def generateHeader(): String = "#include<stdlib.h>" + EOL * 2
+  private def generateHeader(): String = {
+    "#include<stdlib.h>" + EOL * 2
+  }
 
   private def generateStructures(procedure: Procedure): String = {
     def addAttributeType(attributeOccurrence: N): Unit = {
       val attribute: A = attributeOccurrence.name
-      val typename: String = attribute.t.name
-      if (!typeMap.keys.contains(typename))
-        schemesToGenerate += typename
+      val typeName: String = attribute.t.name
+      if (!typeMap.keys.contains(typeName))
+        schemesToGenerate += typeName
     }
 
     for (step: ProofStep <- procedure.steps) {
@@ -60,7 +61,6 @@ class CLangGenerator extends Generator {
     }
 
     def scheme2Structure(schemeName: String): String = {
-
       val relation = procedure.pack.relations(schemeName)
       relation match {
         case scheme: S => {
@@ -72,27 +72,28 @@ class CLangGenerator extends Generator {
         }
         case _ => ""
       }
-
     }
 
     schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL * 2
   }
 
-  private def inputs(procedure: Procedure): String = procedure.input.map(variableForFunctionDeclaration).mkString(", ")
+  private def inputs(procedure: Procedure): String = {
+    def variableForFunctionDeclaration(x: N): String = {
+      val attrName = x.name.name + {if (x.surname != null) "_" + x.surname.name else ""}
+      val typeName = {
+        if (x.surname == null)
+          typeMap(x.name.t.name)
+        else
+          typeMap(x.surname.t.name)
+      }
 
-  private def variableForFunctionDeclaration(x: N): String = {
-    val attrName = x.name.name + {if (x.surname != null) "_" + x.surname.name else ""}
-    val typeName = {
-      if (x.surname == null)
-        typeMap(x.name.t.name)
-      else
-        typeMap(x.surname.t.name)
+      typeName + " " + attrName
     }
 
-    typeName + " " + attrName
+    procedure.input.map(variableForFunctionDeclaration).mkString(", ")
   }
 
-  private def finishSemicolon(list: List[Any]): String = {
+  private def finishSemicolon(list: Seq[Any]): String = {
     if (list.length == 0)
       return ""
     return ";" + EOL

@@ -33,7 +33,7 @@ class CLangGenerator extends Generator {
 
   private def generateMain(procedure: Procedure): String = {
     val output: A = procedure.output(0).name
-    val outputDef: String = typeMap(output.t.name) + " " + output.name + ";"
+    val outputDef: String = getType(output.t.name) + " " + output.name + ";"
 
     "int main(int argc, char *argv[]) {" + EOL +
       indent + outputDef + EOL +
@@ -63,13 +63,12 @@ class CLangGenerator extends Generator {
     def scheme2Structure(schemeName: String): String = {
       val relation = procedure.pack.relations(schemeName)
       relation match {
-        case scheme: S => {
+        case scheme: S =>
           "typedef struct {" + EOL +
             scheme.aTable.values.map(
-              (a: A) => {indent + typeMap(a.t.name) + " " + a.name}
+              (a: A) => {indent + getType(a.t.name) + " " + a.name}
               ).mkString(";" + EOL) + finishSemicolon(scheme.aTable.values.toList) +
             "} " + scheme.name + ";"
-        }
         case _ => ""
       }
     }
@@ -77,21 +76,20 @@ class CLangGenerator extends Generator {
     schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL * 2
   }
 
+  private def getType(typeName: String): String = {
+    if (typeMap.contains(typeName))
+      typeMap(typeName)
+    else
+      typeName
+  }
+
   private def inputs(procedure: Procedure): String = {
     def variableForFunctionDeclaration(x: N): String = {
       val attrName = x.name.name
-      val typeName = {
-        val t: String = x.name.t.name
-        if (typeMap.contains(t))
-          typeMap(t)
-        else
-          t
-      }
-
-      typeName + " " + attrName
+      getType(x.name.t.name) + " " + attrName
     }
 
-    procedure.input.map(variableForFunctionDeclaration).removeDuplicates mkString(", ")
+    procedure.input.map(variableForFunctionDeclaration).removeDuplicates mkString (", ")
   }
 
   private def finishSemicolon(list: Seq[Any]): String = {
@@ -103,16 +101,20 @@ class CLangGenerator extends Generator {
   private def generateProcedure(procedure: Procedure): String = {
     val result: A = procedure.output(0).name
 
-    typeMap(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
+    getType(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
       procedure.steps.map(
-        (x: ProofStep) => {
+        (x: ProofStep) =>
           if (!procedure.input.contains(x.fl.res))
-            indent + typeMap(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
+            indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
           else
             ""
-        }
-        ).mkString("") + EOL +
-      procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
+        ).mkString("") +
+      EOL +
+      procedure.steps.map(
+        (x: ProofStep) =>
+          indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)
+        ).mkString(";" + EOL) +
+      finishSemicolon(procedure.steps) +
       indent + "return " + result.name + ";" + EOL +
       "}" + EOL * 2
   }

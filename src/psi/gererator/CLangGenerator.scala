@@ -24,23 +24,28 @@ class CLangGenerator extends Generator {
     "real" -> "double"
     )
 
+
   override def generate(procedure: Procedure): String = {
+    generateHeader() +
+    generateStructures(procedure) +
+    generateProcedure(procedure) +
+    generateMain(procedure)
+  }
+
+  private def generateMain(procedure: Procedure): String = {
     val output: A = procedure.output(0).name
     val outputDef: String = typeMap(output.t.name) + " " + output.name + ";"
 
-    generateHeader() + EOL +
-      generateStructures(procedure) + EOL +
-      generateProcedure(procedure) + EOL +
-      "int main(int argc, char *argv[]) {" + EOL +
+    "int main(int argc, char *argv[]) {" + EOL +
       indent + outputDef + EOL +
       indent + output.name + " = " + procedure.name + "(" + inputs(procedure) + ");" + EOL +
-      indent + "return 0;" + EOL + 
+      indent + "return 0;" + EOL +
       "}" + EOL
   }
 
-  def generateHeader(): String = "#include<stdlib.h>" + EOL
+  private def generateHeader(): String = "#include<stdlib.h>" + EOL * 2
 
-  def generateStructures(procedure: Procedure): String = {
+  private def generateStructures(procedure: Procedure): String = {
     def addAttributeType(attributeOccurrence: N): Unit = {
       val attribute: A = attributeOccurrence.name
       val typename: String = attribute.t.name
@@ -61,21 +66,21 @@ class CLangGenerator extends Generator {
         case scheme: S => {
           "typedef struct {" + EOL +
             scheme.aTable.values.map(
-            (a:A) => {indent + typeMap(a.t.name) + " " + a.name}
+              (a: A) => {indent + typeMap(a.t.name) + " " + a.name}
               ).mkString(";" + EOL) + finishSemicolon(scheme.aTable.values.toList) +
-          "} " + scheme.name + ";"
+            "} " + scheme.name + ";"
         }
         case _ => ""
       }
 
     }
 
-    schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL
+    schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL * 2
   }
 
-  def inputs(procedure: Procedure): String = procedure.input.map(variableForFunctionDeclaration).mkString(", ")
+  private def inputs(procedure: Procedure): String = procedure.input.map(variableForFunctionDeclaration).mkString(", ")
 
-  def variableForFunctionDeclaration(x: N): String = {
+  private def variableForFunctionDeclaration(x: N): String = {
     val attrName = x.name.name + {if (x.surname != null) "_" + x.surname.name else ""}
     val typeName = {
       if (x.surname == null)
@@ -87,13 +92,13 @@ class CLangGenerator extends Generator {
     typeName + " " + attrName
   }
 
-  def finishSemicolon(list: List[Any]): String = {
+  private def finishSemicolon(list: List[Any]): String = {
     if (list.length == 0)
       return ""
     return ";" + EOL
   }
 
-  def generateProcedure(procedure: Procedure): String = {
+  private def generateProcedure(procedure: Procedure): String = {
     val result: A = procedure.output(0).name
 
     typeMap(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
@@ -107,6 +112,6 @@ class CLangGenerator extends Generator {
         ).mkString("") + EOL +
       procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + (x.fl.expr.impl).replace(".", "_")).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
       indent + "return " + result.name + ";" + EOL +
-      "}" + EOL
+      "}" + EOL * 2
   }
 }

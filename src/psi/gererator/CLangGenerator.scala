@@ -91,8 +91,7 @@ class CLangGenerator extends Generator {
       typeName + " " + attrName
     }
 
-
-    (Set() ++ procedure.input.map(variableForFunctionDeclaration)).mkString(", ")
+    procedure.input.map(variableForFunctionDeclaration).removeDuplicates mkString(", ")
   }
 
   private def finishSemicolon(list: Seq[Any]): String = {

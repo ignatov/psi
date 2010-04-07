@@ -79,18 +79,20 @@ class CLangGenerator extends Generator {
 
   private def inputs(procedure: Procedure): String = {
     def variableForFunctionDeclaration(x: N): String = {
-      val attrName = x.name.name + {if (x.surname != null) "_" + x.surname.name else ""}
+      val attrName = x.name.name
       val typeName = {
-        if (x.surname == null)
-          typeMap(x.name.t.name)
+        val t: String = x.name.t.name
+        if (typeMap.contains(t))
+          typeMap(t)
         else
-          typeMap(x.surname.t.name)
+          t
       }
 
       typeName + " " + attrName
     }
 
-    procedure.input.map(variableForFunctionDeclaration).mkString(", ")
+
+    (Set() ++ procedure.input.map(variableForFunctionDeclaration)).mkString(", ")
   }
 
   private def finishSemicolon(list: Seq[Any]): String = {
@@ -111,7 +113,7 @@ class CLangGenerator extends Generator {
             ""
         }
         ).mkString("") + EOL +
-      procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + (x.fl.expr.impl).replace(".", "_")).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
+      procedure.steps.map((x: ProofStep) => indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)).mkString(";" + EOL) + finishSemicolon(procedure.steps) +
       indent + "return " + result.name + ";" + EOL +
       "}" + EOL * 2
   }

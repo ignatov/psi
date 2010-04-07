@@ -7,15 +7,15 @@ P Pack {
   };
   S Simple {
     Complex z1, z2;
-    real a, b, c
+    real a, b, c, d
     |
     a <- z1.x + z1.y;
     b <- z2.x + z2.y;
-    c <- a + b
+    c <- (a + b) * d
   };
   Q task {
     on Simple
-    in z1.x, z1.y, z2.x, z2.y 
+    in z1.x, z1.y, z2.x, z2.y, d
     out c
   }
 }

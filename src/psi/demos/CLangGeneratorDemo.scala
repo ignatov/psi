@@ -1,5 +1,6 @@
 package psi.demos
 
+import java.io.File
 import psi.synthesizer.Prover
 import psi.compiler.metamodel.{P, Converter, Q}
 import psi.compiler.parser.PSIParser
@@ -15,7 +16,7 @@ object CLangGeneratorDemo {
     if (args.length != 1)
       return Console.err.println("Please enter filename")
 
-    val parseResult = PSIParser.parse(PSIParser.P, scala.io.Source.fromFile(args(0)) mkString)
+    val parseResult = PSIParser.parse(PSIParser.P, scala.io.Source.fromFile(new File(args(0))) mkString)
 
     if (!parseResult.successful)
       return println(parseResult)

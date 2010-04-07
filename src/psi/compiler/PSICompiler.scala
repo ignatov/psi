@@ -1,5 +1,6 @@
 package psi.compiler
 
+import java.io.File
 import metamodel.Converter
 import parser.PSIParser
 import scala.io.Source.fromFile
@@ -12,7 +13,7 @@ import scala.io.Source.fromFile
 object PSICompiler {
   def main(args: Array[String]): Unit = {
     if (args.length == 1) {
-      val parseResult = PSIParser.parse(PSIParser.P, fromFile(args(0)) mkString)
+      val parseResult = PSIParser.parse(PSIParser.P, fromFile(new File(args(0))) mkString)
       if (!parseResult.successful)
         println(parseResult)
       else

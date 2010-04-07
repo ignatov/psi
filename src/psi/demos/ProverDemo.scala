@@ -1,5 +1,6 @@
 package psi.demos
 
+import java.io.File
 import scala.io.Source.fromFile
 import psi.compiler.parser.PSIParser
 import psi.compiler.metamodel.{Q, P, Converter}
@@ -15,7 +16,7 @@ object ProverDemo {
     if (args.length != 1)
       return Console.err.println("Please enter filename")
 
-    val parseResult = PSIParser.parse(PSIParser.P, fromFile(args(0)) mkString)
+    val parseResult = PSIParser.parse(PSIParser.P, fromFile(new File(args(0))) mkString)
     
     if (!parseResult.successful)
       return println(parseResult)

@@ -7,4 +7,4 @@ import psi.compiler.metamodel.G
  * Date: 07.04.2010
  */
 
-case class Condition(guard: G, isPositive: boolean)
+case class Condition(guard: G, isPositive: Boolean)

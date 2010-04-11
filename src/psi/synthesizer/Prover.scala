@@ -1,6 +1,6 @@
 package psi.synthesizer
 
-import _root_.psi.compiler.metamodel.datastructs._
+import psi.compiler.metamodel.datastructs._
 import collection.mutable.ArrayBuffer
 import datastructs.{Condition, ProofStep, Procedure}
 

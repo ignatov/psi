@@ -1,6 +1,6 @@
 package psi.synthesizer.datastructs
 
-import psi.compiler.metamodel.{N, F}
+import psi.compiler.metamodel.datastructs.{N, F}
 
 /**
  * User: ignatov

@@ -2,8 +2,9 @@ package psi.compiler
 
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
-import parser.PSIParser
-import metamodel.{P, Converter}
+import psi.compiler.parser.PSIParser
+import psi.compiler.metamodel.Converter
+import psi.compiler.metamodel.datastructs.P
 
 /**
  * User: ignatov

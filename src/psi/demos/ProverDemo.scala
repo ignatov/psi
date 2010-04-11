@@ -3,7 +3,8 @@ package psi.demos
 import java.io.File
 import scala.io.Source.fromFile
 import psi.compiler.parser.PSIParser
-import psi.compiler.metamodel.{Q, P, Converter}
+import psi.compiler.metamodel.Converter
+import psi.compiler.metamodel.datastructs.{P, Q}
 import psi.synthesizer.Prover
 
 /**
@@ -17,14 +18,14 @@ object ProverDemo {
       return Console.err.println("Please enter filename")
 
     val parseResult = PSIParser.parse(PSIParser.P, fromFile(new File(args(0))) mkString)
-    
+
     if (!parseResult.successful)
       return println(parseResult)
 
     val pack: P = Converter convert parseResult.get
     for (val relation <- pack.relations.values) {
       relation match {
-        case task: Q => println(new Prover doProof(pack, task))
+        case task: Q => println(new Prover doProof (pack, task))
         case _ =>
       }
     }

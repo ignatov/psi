@@ -1,6 +1,6 @@
 package psi.synthesizer.datastructs
 
-import psi.compiler.metamodel.G
+import psi.compiler.metamodel.datastructs.G
 
 /**
  * User: ignatov

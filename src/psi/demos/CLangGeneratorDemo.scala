@@ -2,7 +2,8 @@ package psi.demos
 
 import java.io.File
 import psi.synthesizer.Prover
-import psi.compiler.metamodel.{P, Converter, Q}
+import psi.compiler.metamodel.Converter
+import psi.compiler.metamodel.datastructs.{P, Q}
 import psi.compiler.parser.PSIParser
 import psi.gererator.CLangGenerator
 
@@ -24,7 +25,7 @@ object CLangGeneratorDemo {
     val pack: P = Converter convert parseResult.get
     for (val relation <- pack.relations.values) {
       relation match {
-        case task: Q => println((new CLangGenerator generate (new Prover doProof(pack, task))) + "-" * 20)
+        case task: Q => println((new CLangGenerator generate (new Prover doProof (pack, task))) + "-" * 20)
         case _ =>
       }
     }

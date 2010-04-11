@@ -1,4 +1,4 @@
-package psi.compiler.metamodel
+package psi.compiler.metamodel.datastructs
 
 import compat.Platform.EOL
 import collection.mutable.{ArrayBuffer, HashMap}

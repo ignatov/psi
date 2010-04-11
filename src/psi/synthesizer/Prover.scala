@@ -1,7 +1,7 @@
 package psi.synthesizer
 
-import psi.compiler.metamodel.{P, F, N, Q}
 import collection.mutable.ArrayBuffer
+import psi.compiler.metamodel.datastructs.{P, F, N, Q}
 import datastructs.{ProofStep, Procedure}
 
 /**

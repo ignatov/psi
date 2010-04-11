@@ -1,5 +1,6 @@
 package psi.compiler.metamodel
 
+import datastructs._
 import psi.compiler.parser._
 import collection.mutable.{ArrayBuffer, HashMap}
 

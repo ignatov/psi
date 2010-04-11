@@ -1,6 +1,6 @@
 package psi.synthesizer.datastructs
 
-import psi.compiler.metamodel.{P, N}
+import psi.compiler.metamodel.datastructs.{P, N}
 import compat.Platform.EOL
 
 /**

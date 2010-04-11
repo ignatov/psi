@@ -2,7 +2,8 @@ package psi.generator
 
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
-import psi.compiler.metamodel.{Q, P, Converter}
+import psi.compiler.metamodel.Converter
+import psi.compiler.metamodel.datastructs.{P, Q}
 import psi.compiler.parser.PSIParser
 import psi.synthesizer.Prover
 import psi.gererator.CLangGenerator

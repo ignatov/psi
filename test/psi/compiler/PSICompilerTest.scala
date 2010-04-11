@@ -1,18 +1,15 @@
 package psi.compiler
 
-import org.junit.runner.RunWith
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.Spec
-import metamodel.{P, Converter}
+import org.scalatest.matchers.ShouldMatchers
 import parser.PSIParser
+import metamodel.{P, Converter}
 
 /**
  * User: ignatov
  * Date: 11.03.2010
  */
 
-@RunWith(classOf[JUnitRunner])
 class PSICompilerTest extends Spec with ShouldMatchers {
   describe("A package") {
     describe("(when empty)") {

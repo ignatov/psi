@@ -1,5 +1,6 @@
 package psi.compiler
 
+import _root_.java.lang.String
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitRunner
@@ -20,6 +21,31 @@ class PSICompilerTest extends Spec with ShouldMatchers {
 
       it("relations should be empty") {
         result.relations should be('empty)
+      }
+    }
+
+    describe("(with scheme and task)") {
+      val input: String = """
+        P Simple {
+          S Simple {
+            int a, b, c, d
+            |
+            a <- b + c
+          }
+          if c > 0 then
+            b <- c * 2
+          else
+            b <- c * 3
+          fi;
+
+          Q find_a {on Simple in c out a}
+        }
+      """
+      val parseResult = PSIParser.parse(PSIParser.P, input)
+      val result: P = Converter convert parseResult.get
+
+      it("relations should have lenght 2") {
+        result.relations.size should be(2)
       }
     }
   }

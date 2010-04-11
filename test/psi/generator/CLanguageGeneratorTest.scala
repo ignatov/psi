@@ -65,5 +65,39 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
             "}\r\n")
       }
     }
+    describe("(when can't reacher attribute)") {
+      val input: String = """
+        P pack {
+          S Simple {
+            int a, b, c, d
+            |
+            a <- b + c;
+            b <- c * 2;
+            d <- a + b
+          };
+          Q find_a {on Simple in b out a}
+        }
+      """
+      val parseResult = PSIParser.parse(PSIParser.P, input)
+      val result: P = Converter convert parseResult.get
+      it("failed") {
+        createPrograms(result) should be(
+          "#include<stdlib.h>\r\n" +
+            "\r\n" +
+            "\r\n" +
+            "\r\n" +
+            "int failed(int b) {\r\n" +
+            "\r\n" +
+            "  return a;\r\n" +
+            "}\r\n" +
+            "\r\n" +
+            "int main(int argc, char *argv[]) {\r\n" +
+            "  int a;\r\n" +
+            "  a = failed(int b);\r\n" +
+            "  return 0;\r\n" +
+            "}\r\n")
+      }
+
+    }
   }
 }

@@ -1,12 +1,16 @@
 package psi.compiler
 
-import _root_.java.lang.String
 import org.junit.runner.RunWith
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.Spec
 import metamodel.{P, Converter}
 import parser.PSIParser
+
+/**
+ * User: ignatov
+ * Date: 11.03.2010
+ */
 
 @RunWith(classOf[JUnitRunner])
 class PSICompilerTest extends Spec with ShouldMatchers {

@@ -108,11 +108,17 @@ class CLangGenerator extends Generator {
             indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
           else
             ""
-        ).mkString("") +
+        ).removeDuplicates.mkString("") +
       EOL +
       procedure.steps.map(
-        (x: ProofStep) =>
-          indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)
+        (x: ProofStep) => 
+          {
+            if (x.condition != null) {
+              indent + "if (" + {if (!x.condition.isPositive) "!" else ""} + x.condition.guard.expr.impl + ")" + EOL + indent
+            } else ""
+          } +
+            indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)
+
         ).mkString(";" + EOL) +
       finishSemicolon(procedure.steps) +
       indent + "return " + result.name + ";" + EOL +

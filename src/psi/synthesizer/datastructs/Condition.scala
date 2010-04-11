@@ -7,4 +7,6 @@ import psi.compiler.metamodel.datastructs.G
  * Date: 07.04.2010
  */
 
-case class Condition(guard: G, isPositive: Boolean)
+case class Condition(guard: G, isPositive: Boolean) {
+  override def toString = "Condition(" + isPositive + ")"
+}

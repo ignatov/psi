@@ -8,5 +8,5 @@ import psi.compiler.metamodel.datastructs.{N, F}
  */
 
 case class ProofStep(fl: F, reachedAttribute: N, condition: Condition) {
-  override def toString = "ProofStep(" + fl + ", " + reachedAttribute.name.name + ")"
+  override def toString = "ProofStep(" + fl + ", " + reachedAttribute.name.name + ", " +condition +")"
 }

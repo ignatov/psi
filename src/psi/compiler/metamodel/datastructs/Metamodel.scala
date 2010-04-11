@@ -79,7 +79,7 @@ case class A(name: String, t: T) extends Metamodel {
  * Attribute occurrence
  */
 case class N(name: A, surname: A, left: ArrayBuffer[F], right: ArrayBuffer[F]) extends Metamodel {
-  def attrName = name.name + {if (surname != null) "." + surname.name else ""}
+  def attrName: String = name.name + {if (surname != null) "." + surname.name else ""}
 
   override def toString = "N(" + attrName + "; " + left.mkString(",") + "; " + right.mkString(",") + ")"
 }

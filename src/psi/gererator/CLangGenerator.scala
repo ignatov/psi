@@ -1,9 +1,9 @@
 package psi.gererator
 
+import _root_.psi.synthesizer.datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
 import compat.Platform.EOL
-import collection.mutable.HashSet
 import psi.compiler.metamodel.datastructs.{S, A, N}
-import psi.synthesizer.datastructs.{ProofStep, Procedure}
+import collection.mutable.{ArrayBuffer, HashSet}
 
 /**
  * User: ignatov
@@ -55,9 +55,13 @@ class CLangGenerator extends Generator {
     }
 
     for (step: ProofStep <- procedure.steps) {
-      addAttributeType(step.reachedAttribute)
-      addAttributeType(step.fl.res)
-      step.fl.expr.args.map(addAttributeType)
+      step match {
+        case step: SingleStep =>
+          addAttributeType(step.reachedAttribute)
+          addAttributeType(step.fl.res)
+          step.fl.expr.args.map(addAttributeType)
+        case _ =>
+      }
     }
 
     def scheme2Structure(schemeName: String): String = {
@@ -95,32 +99,57 @@ class CLangGenerator extends Generator {
   private def finishSemicolon(list: Seq[Any]): String = {
     if (list.length == 0)
       return ""
-    return ";" + EOL
+    return ";"
   }
 
   private def generateProcedure(procedure: Procedure): String = {
     val result: A = procedure.output(0).name
 
-    getType(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
+
+    def generateVariableDefinitions(steps: List[ProofStep]): String = {
+      def generateDef(x: SingleStep): String = {
+        indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
+      }
+
+      val names = new ArrayBuffer[String]
       procedure.steps.map(
         (x: ProofStep) =>
-          if (!procedure.input.contains(x.fl.res))
-            indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
-          else
-            ""
-        ).removeDuplicates.mkString("") +
+          x match {
+            case x: SingleStep =>
+              if (!procedure.input.contains(x.fl.res))
+                names append (generateDef(x))
+              else
+                ""
+            case x: ConditionStep =>
+              x.thenSteps.map((s: SingleStep) => names append (generateDef(s)))
+              x.elseSteps.map((s: SingleStep) => names append (generateDef(s)))
+          }
+        )
+      names.toList.removeDuplicates.mkString("")
+    }
+
+    def generateFunctionalLink(s: SingleStep): String = {
+      s.fl.res.attrName + " = " + (s.fl.expr.impl) + ";"
+    }
+
+    getType(result.t.name) + " " + procedure.name + "(" + inputs(procedure) + ") {" + EOL +
+      generateVariableDefinitions(procedure.steps) +
       EOL +
       procedure.steps.map(
-        (x: ProofStep) => 
-          {
-            if (x.condition != null) {
-              indent + "if (" + {if (!x.condition.isPositive) "!" else ""} + x.condition.guard.expr.impl + ")" + EOL + indent
-            } else ""
-          } +
-            indent + x.fl.res.attrName + " = " + (x.fl.expr.impl)
-
-        ).mkString(";" + EOL) +
-      finishSemicolon(procedure.steps) +
+        (x: ProofStep) =>
+          x match {
+            case x: SingleStep => indent + generateFunctionalLink(x)
+            case x: ConditionStep =>
+              indent +
+                "if (" + x.guard.expr.impl + ") {" + EOL +
+                x.thenSteps.map((s: SingleStep) => indent * 2 + generateFunctionalLink(s)).mkString(EOL) + EOL +
+                indent + "}" + EOL +
+                indent + "else {" + EOL +
+                x.elseSteps.map((s: SingleStep) => indent * 2 + generateFunctionalLink(s)).mkString(EOL) + EOL +
+                indent + "}" + EOL
+          }
+        ).mkString(EOL) +
+      EOL +
       indent + "return " + result.name + ";" + EOL +
       "}" + EOL * 2
   }

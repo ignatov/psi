@@ -1,9 +1,8 @@
 package psi.synthesizer
 
+import datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
 import psi.compiler.metamodel.datastructs._
 import collection.mutable.ArrayBuffer
-import datastructs.{Condition, ProofStep, Procedure}
-
 /**
  * User: ignatov
  * Date: 03.04.2010
@@ -37,7 +36,7 @@ class Prover {
 
       process(result)
 
-      proofSteps append (new ProofStep(f, result, null))
+      proofSteps append (new SingleStep(f, result))
     }
 
     new Procedure(task.name, pack, input, output, proofSteps.toList)
@@ -74,11 +73,13 @@ class Prover {
     val reachedOnRightCase = new ArrayBuffer[N]
     val leftFunctions = new ArrayBuffer[F]
     val rightFunctions = new ArrayBuffer[F]
+    val conditionStep = new ConditionStep(guard, new ArrayBuffer, new ArrayBuffer)
 
     for (val f: F <- scheme.thenBranch.fls) { //todo: what about order?
       if (contains((reached.toList ::: reachedOnRightCase.toList) map (_.name), f.expr.args map (_.name))) {
         rightFunctions append f
         reachedOnRightCase append f.res
+        conditionStep.thenSteps.append(new SingleStep(f, f.res))
       }
     } //todo: remove used fls
 
@@ -86,16 +87,19 @@ class Prover {
       if (contains((reached.toList ::: reachedOnLeftCase.toList) map (_.name), f.expr.args map (_.name))) {
         leftFunctions append f
         reachedOnLeftCase append f.res
+        conditionStep.elseSteps.append(new SingleStep(f, f.res))
       }
     }
 
     val intersected = ((reachedOnLeftCase.toList) map ((n: N) => n.attrName)) intersect ((reachedOnRightCase.toList) map ((n: N) => n.attrName))
 
-    for (val f <- rightFunctions if intersected contains f.res.attrName)
-      proofSteps append new ProofStep(f, f.res, new Condition(guard, true))
+//    for (val f <- rightFunctions if intersected contains f.res.attrName)
+//      proofSteps append new SingleStep(f, f.res)
+//
+//    for (val f <- leftFunctions if intersected contains f.res.attrName)
+//      proofSteps append new SingleStep(f, f.res)
 
-    for (val f <- leftFunctions if intersected contains f.res.attrName)
-      proofSteps append new ProofStep(f, f.res, new Condition(guard, false))
+    proofSteps append conditionStep
 
     return intersected map ((name: String) => scheme.nTable(name))
   }

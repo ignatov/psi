@@ -89,6 +89,7 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
             "\r\n" +
             "int failed(int b) {\r\n" +
             "\r\n" +
+            "\r\n" +
             "  return a;\r\n" +
             "}\r\n" +
             "\r\n" +
@@ -130,10 +131,13 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
             "  int b;\r\n" +
             "  int a;\r\n" +
             "\r\n" +
-            "  if ((c > 0))\r\n" +
+            "  if ((c > 0)) {\r\n" +
             "    b = (c * 2);\r\n" +
-            "  if (!(c > 0))\r\n" +
+            "  }\r\n" +
+            "  else {\r\n" +
             "    b = (c * 3);\r\n" +
+            "  }\r\n" +
+            "\r\n" +
             "  a = (b + c);\r\n" +
             "  return a;\r\n" +
             "}\r\n" +

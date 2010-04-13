@@ -44,7 +44,10 @@ class Prover {
   }
 
   private def contains(master: List[Any], slave: List[Any]): Boolean = {
-    master.toList.union(slave).length == master.length
+    for (val e <- slave)
+      if (!master.contains(e))
+        return false
+    true
   }
 
   def process(a: N): Unit = {

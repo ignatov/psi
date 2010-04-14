@@ -41,17 +41,17 @@ case class Operator(left: Expression, right: Expression, op: String) extends Exp
 /**
  * Relation base class for named elements
  */
-abstract case class Relation(name: String) extends ExprTree
+abstract class Relation(name: String) extends ExprTree
 
 /**
  * Scheme representation
  */
-case class Scheme(override val name: String, condition: IfStatement, attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
+case class Scheme(name: String, condition: IfStatement, attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
 
 /**
  * Task representation
  */
-case class Task(override val name: String, scheme: String, in: List[AttributeOccurrence], out: List[AttributeOccurrence]) extends Relation(name)
+case class Task(name: String, scheme: String, in: List[AttributeOccurrence], out: List[AttributeOccurrence]) extends Relation(name)
 
 /**
  * Package representation

@@ -50,7 +50,7 @@ class CLangGenerator extends Generator {
     def addAttributeType(attributeOccurrence: N): Unit = {
       val attribute: A = attributeOccurrence.name
       val typeName: String = attribute.t.name
-      if (!typeMap.keys.contains(typeName))
+      if (!typeMap.contains(typeName))
         schemesToGenerate += typeName
     }
 
@@ -93,7 +93,7 @@ class CLangGenerator extends Generator {
       getType(x.name.t.name) + " " + attrName
     }
 
-    procedure.input.map(variableForFunctionDeclaration).removeDuplicates mkString (", ")
+    procedure.input.map(variableForFunctionDeclaration).distinct mkString (", ")
   }
 
   private def finishSemicolon(list: Seq[Any]): String = {
@@ -125,7 +125,7 @@ class CLangGenerator extends Generator {
               x.elseSteps.map((s: SingleStep) => names append (generateDef(s)))
           }
         )
-      names.toList.removeDuplicates.mkString("")
+      names.toList.distinct mkString("")
     }
 
     def generateFunctionalLink(s: SingleStep): String = {

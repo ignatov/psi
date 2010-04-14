@@ -25,7 +25,7 @@ class Prover {
 
     while (unreached.length > 0) {
       if (functions.length == 0)
-        for (val a <- processCaseStatement(task.scheme, task.scheme.condition))
+        for (a <- processCaseStatement(task.scheme, task.scheme.condition))
           process(a)
 
       if (functions.length == 0)
@@ -43,7 +43,7 @@ class Prover {
   }
 
   private def contains(master: List[Any], slave: List[Any]): Boolean = {
-    for (val e <- slave)
+    for (e <- slave)
       if (!master.contains(e))
         return false
     true
@@ -75,7 +75,7 @@ class Prover {
     val rightFunctions = new ArrayBuffer[F]
     val conditionStep = new ConditionStep(guard, new ArrayBuffer, new ArrayBuffer)
 
-    for (val f: F <- scheme.thenBranch.fls) { //todo: what about order?
+    for (f: F <- scheme.thenBranch.fls) { //todo: what about order?
       if (contains((reached.toList ::: reachedOnRightCase.toList) map (_.name), f.expr.args map (_.name))) {
         rightFunctions append f
         reachedOnRightCase append f.res
@@ -83,7 +83,7 @@ class Prover {
       }
     } //todo: remove used fls
 
-    for (val f: F <- scheme.elseBranch.fls) {
+    for (f: F <- scheme.elseBranch.fls) {
       if (contains((reached.toList ::: reachedOnLeftCase.toList) map (_.name), f.expr.args map (_.name))) {
         leftFunctions append f
         reachedOnLeftCase append f.res
@@ -93,10 +93,10 @@ class Prover {
 
     val intersected = ((reachedOnLeftCase.toList) map ((n: N) => n.attrName)) intersect ((reachedOnRightCase.toList) map ((n: N) => n.attrName))
 
-//    for (val f <- rightFunctions if intersected contains f.res.attrName)
+//    for (f <- rightFunctions if intersected contains f.res.attrName)
 //      proofSteps append new SingleStep(f, f.res)
 //
-//    for (val f <- leftFunctions if intersected contains f.res.attrName)
+//    for (f <- leftFunctions if intersected contains f.res.attrName)
 //      proofSteps append new SingleStep(f, f.res)
 
     proofSteps append conditionStep

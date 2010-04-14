@@ -23,7 +23,7 @@ object ProverDemo {
       return println(parseResult)
 
     val pack: P = Converter convert parseResult.get
-    for (val relation <- pack.relations.values) {
+    for (relation <- pack.relations.values) {
       relation match {
         case task: Q => println(new Prover doProof (pack, task))
         case _ =>

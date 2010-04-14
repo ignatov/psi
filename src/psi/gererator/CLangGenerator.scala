@@ -108,7 +108,7 @@ class CLangGenerator extends Generator {
 
     def generateVariableDefinitions(steps: List[ProofStep]): String = {
       def generateDef(x: SingleStep): String = {
-        indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.attrName + ";" + EOL
+        indent + getType(x.fl.res.name.t.name) + " " + x.fl.res.name.name + ";" + EOL
       }
 
       val names = new ArrayBuffer[String]

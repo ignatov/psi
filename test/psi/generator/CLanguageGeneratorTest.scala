@@ -150,7 +150,7 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
       }
     }
 
-    describe("(when program with more complicated cases)") {
+    describe("(when program with local attributes in cases)") {
       val input: String = """
         P pack {
           S Simple {
@@ -161,6 +161,61 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           if c > 0 then
             i <- c * c;
             b <- c * 2 * i
+          else
+            b <- c * 3
+          fi;
+
+          Q find_a {on Simple in c out a}
+        }
+      """
+      val parseResult = PSIParser.parse(PSIParser.P, input)
+      val result: P = Converter convert parseResult.get
+
+      it("should generate C source") {
+        createPrograms(result) should be(
+          "#include<stdlib.h>\r\n" +
+            "\r\n" +
+            "\r\n" +
+            "\r\n" +
+            "int find_a(int c) {\r\n" +
+            "  int i;\r\n" +
+            "  int b;\r\n" +
+            "  int a;\r\n" +
+            "\r\n" +
+            "  if ((c > 0)) {\r\n" +
+            "    i = (c * c);\r\n" +
+            "    b = ((c * 2) * i);\r\n" +
+            "  }\r\n" +
+            "  else {\r\n" +
+            "    b = (c * 3);\r\n" +
+            "  }\r\n" +
+            "\r\n" +
+            "  a = (b + c);\r\n" +
+            "  return a;\r\n" +
+            "}\r\n" +
+            "\r\n" +
+            "int main(int argc, char *argv[]) {\r\n" +
+            "  int a;\r\n" +
+            "  a = find_a(int c);\r\n" +
+            "  return 0;\r\n" +
+            "}\r\n")
+      }
+    }
+
+    describe("(when program with local case conditions)") {
+      val input: String = """
+        P pack {
+          S Simple {
+            int a, b, c
+            |
+            a <- b + c
+          }
+          if c > 0 then {
+            int i
+            |
+            i <- c * c;
+            b <- c * 2 * i
+          }
           else
             b <- c * 3
           fi;

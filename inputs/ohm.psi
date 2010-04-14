@@ -1,0 +1,36 @@
+P pOhm {
+  S Ohm {
+    Real i, u, r
+    |
+    u<- i*r;
+    i<-u/r;
+    r<-u/i
+  };
+  S Par {
+    Ohm c1, c2, c
+    |
+    c.u <- c1.u;
+    c.u <- c2.u;
+    c.i <- c1.i+c2.i;
+    c.r <- (c1.r * c2.r) / (c1.r + c2.r)
+  };
+  S Seq {
+    Ohm c1, c2, c
+    |
+    c.i <- c1.i;
+    c.i <- c2.i;
+    c.u <- c1.u + c2.u;
+    c.r <- c1.r + c2.r
+  };
+  S Circuited {
+    Ohm c1, c2, c3;
+    Par p;
+    Seq s
+    |
+    p.c1 <- c1;
+    p.c2 <- c2;
+    s.c1 <- p.c;
+    s.c2 <- c3
+  };
+  Q task {on Circuited in c1, c2, c3 out s.c2}
+}

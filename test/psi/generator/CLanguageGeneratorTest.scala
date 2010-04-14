@@ -27,6 +27,11 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
     sb.toString
   }
 
+  def getResult(input: String): P = {
+    val parseResult = PSIParser.parse(PSIParser.P, input)
+    Converter convert parseResult.get
+  }
+
   describe("A generator") {
     describe("(when program without cases)") {
       val input: String = """
@@ -41,8 +46,8 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           Q find_a {on Simple in c out a}
         }
       """
-      val parseResult = PSIParser.parse(PSIParser.P, input)
-      val result: P = Converter convert parseResult.get
+
+      val result = getResult(input)
 
       it("should generate C source") {
         createPrograms(result) should be(
@@ -79,8 +84,9 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           Q find_a {on Simple in b out a}
         }
       """
-      val parseResult = PSIParser.parse(PSIParser.P, input)
-      val result: P = Converter convert parseResult.get
+
+      val result = getResult(input)
+
       it("failed") {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
@@ -118,8 +124,8 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           Q find_a {on Simple in c out a}
         }
       """
-      val parseResult = PSIParser.parse(PSIParser.P, input)
-      val result: P = Converter convert parseResult.get
+
+      val result = getResult(input)
 
       it("should generate C source") {
         createPrograms(result) should be(
@@ -168,8 +174,8 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           Q find_a {on Simple in c out a}
         }
       """
-      val parseResult = PSIParser.parse(PSIParser.P, input)
-      val result: P = Converter convert parseResult.get
+
+      val result = getResult(input)
 
       it("should generate C source") {
         createPrograms(result) should be(
@@ -223,8 +229,8 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
           Q find_a {on Simple in c out a}
         }
       """
-      val parseResult = PSIParser.parse(PSIParser.P, input)
-      val result: P = Converter convert parseResult.get
+
+      val result = getResult(input)
 
       it("should generate C source") {
         createPrograms(result) should be(

@@ -71,13 +71,13 @@ class CLangGenerator extends Generator {
           "typedef struct {" + EOL +
             scheme.aTable.values.map(
               (a: A) => {indent + getType(a.t.name) + " " + a.name}
-              ).mkString(";" + EOL) + finishSemicolon(scheme.aTable.values.toList) +
-            "} " + scheme.name + ";"
+              ).mkString(";" + EOL) + finishSemicolon(scheme.aTable.values.toList) + EOL +
+            "} " + scheme.name + ";" + EOL * 2
         case _ => ""
       }
     }
 
-    schemesToGenerate.map(scheme2Structure).mkString(EOL) + EOL * 2
+    schemesToGenerate.map(scheme2Structure).mkString("")
   }
 
   private def getType(typeName: String): String = {

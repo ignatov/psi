@@ -53,8 +53,6 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
             "\r\n" +
-            "\r\n" +
-            "\r\n" +
             "int find_a(int c) {\r\n" +
             "  int b;\r\n" +
             "  int a;\r\n" +
@@ -90,8 +88,6 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
       it("failed") {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
-            "\r\n" +
-            "\r\n" +
             "\r\n" +
             "int failed(int b) {\r\n" +
             "\r\n" +
@@ -130,8 +126,6 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
       it("should generate C source") {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
-            "\r\n" +
-            "\r\n" +
             "\r\n" +
             "int find_a(int c) {\r\n" +
             "  int b;\r\n" +
@@ -180,8 +174,6 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
       it("should generate C source") {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
-            "\r\n" +
-            "\r\n" +
             "\r\n" +
             "int find_a(int c) {\r\n" +
             "  int i;\r\n" +
@@ -235,8 +227,6 @@ class CLanguageGeneratorTest extends Spec with ShouldMatchers {
       it("should generate C source") {
         createPrograms(result) should be(
           "#include<stdlib.h>\r\n" +
-            "\r\n" +
-            "\r\n" +
             "\r\n" +
             "int find_a(int c) {\r\n" +
             "  int i;\r\n" +

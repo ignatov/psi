@@ -1,9 +1,9 @@
 package psi.gererator
 
-import _root_.psi.synthesizer.datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
-import compat.Platform.EOL
-import psi.compiler.metamodel.datastructs.{S, A, N}
 import collection.mutable.{ArrayBuffer, HashSet}
+import compat.Platform.EOL
+import psi.synthesizer.datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
+import psi.compiler.metamodel.datastructs.{S, A, N}
 
 /**
  * User: ignatov

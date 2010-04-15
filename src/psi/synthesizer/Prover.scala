@@ -2,7 +2,7 @@ package psi.synthesizer
 
 import datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
 import psi.compiler.metamodel.datastructs._
-import collection.mutable.ArrayBuffer
+import collection.mutable.{ListBuffer, ArrayBuffer}
 
 /**
  * User: ignatov
@@ -77,28 +77,27 @@ class Prover {
 
         val conditionStep = new ConditionStep(guard, new ArrayBuffer, new ArrayBuffer)
 
-        def processBranch(branch: Option[V], proofSteps: ArrayBuffer[SingleStep]): List[N] = { //todo: cleanup
+        def processBranch(branch: Option[V]): List[F] = { //todo: cleanup
           branch match {
             case None => Nil
             case Some(branch) =>
-              var result = List[N]()
+              var result = ListBuffer[F]()
               for (f: F <- branch.fls) { //todo: what about order?
-                if (contains((reached.toList ::: result) map (_.name), f.expr.args map (_.name))) {
-                  proofSteps.append(new SingleStep(f, f.res))
-                  result = f.res :: result
-                }
+                if (contains((reached.toList ::: result.toList.map(_.res)) map (_.name), f.expr.args map (_.name)))
+                  result append f
               } //todo: remove used fls
-              result
+              return result toList
           }
         }
 
-        // life is good
-        val reachedOnLeftCase = processBranch(scheme.elseBranch, conditionStep.elseSteps)
-        val reachedOnRightCase = processBranch(scheme.thenBranch, conditionStep.thenSteps)
+        val thenCaseFls = processBranch(scheme.thenBranch)
+        val elseCaseFls = processBranch(scheme.elseBranch)
 
+        conditionStep.thenSteps.appendAll(thenCaseFls map ((f: F) => new SingleStep(f, f.res)))
+        conditionStep.elseSteps.appendAll(elseCaseFls map ((f: F) => new SingleStep(f, f.res)))
         proofSteps append conditionStep
 
-        val intersected = (reachedOnLeftCase map ((n: N) => n.attrName)) intersect (reachedOnRightCase.toList map ((n: N) => n.attrName))
+        val intersected = (elseCaseFls map ((f: F) => f.res.attrName)) intersect (thenCaseFls map ((f: F) => f.res.attrName))
 
         return intersected map ((name: String) => scheme.nTable(name))
     }

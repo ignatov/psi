@@ -44,9 +44,15 @@ object Converter {
     scheme.attributes foreach (
       a => attributeTable(a.name) = A(a.name, typeTable.getOrElseUpdate(a.t.name, T(a.t.name))))
 
-    val g: G = getCondition(scheme.condition, attributeTable, occurrenceTable)
-    val thenV = {if (scheme.condition != null) block2V(scheme.condition.positive, attributeTable) else null}
-    val elseV = {if (scheme.condition != null) block2V(scheme.condition.negative, attributeTable) else null}
+    val g = getCondition(scheme.condition, attributeTable, occurrenceTable)
+    val thenV = scheme.condition match {
+      case Some(condition) => Some(block2V(condition.positive, attributeTable))
+      case None => None
+    }
+    val elseV = scheme.condition match {
+      case Some(condition) => Some(block2V(condition.negative, attributeTable))
+      case None => None
+    }
     val fs: List[F] = scheme.fls map (f => fl2F(f, attributeTable, occurrenceTable))
 
     S(scheme.name, g, thenV, elseV, fs, attributeTable, occurrenceTable)
@@ -57,7 +63,6 @@ object Converter {
    */
   private def task2Q(task: Task): Q = {
     val s = schemeTable(task.scheme)
-
     Q(task.name, s, task.in map (n => s.getN(n.toString)), task.out map (n => s.getN(n.toString)))
   }
 
@@ -66,9 +71,9 @@ object Converter {
    * @param aTable the attributes table from parent scheme
    * @param nTable the attributes occurrences table from parent scheme
    */
-  private def getCondition(ifExpr: IfStatement, aTable: HashMap[String, A], nTable: HashMap[String, N]): G = ifExpr match {
-    case null => null
-    case i => condition2G(i.condition, aTable, nTable)
+  private def getCondition(ifExpr: Option[IfStatement], aTable: HashMap[String, A], nTable: HashMap[String, N]): Option[G] = ifExpr match {
+    case None => None
+    case Some(i) => Some(condition2G(i.condition, aTable, nTable))
   }
 
   /**
@@ -87,12 +92,12 @@ object Converter {
    * @param nTable the attributes occurrences table from parent scheme
    */
   private def occurrence2N(n: AttributeOccurrence, aTable: HashMap[String, A], nTable: HashMap[String, N]): N = n match {
-    case AttributeOccurrence(attr, null) =>
+    case AttributeOccurrence(attr, None) =>
       nTable.getOrElseUpdate(n.toString,
-        N(aTable(attr), null, new ArrayBuffer[F], new ArrayBuffer[F]))
-    case AttributeOccurrence(attr, sub) =>
+        N(aTable(attr), None, new ArrayBuffer[F], new ArrayBuffer[F]))
+    case AttributeOccurrence(attr, Some(sub)) =>
       nTable.getOrElseUpdate(n.toString,
-        N(aTable(attr), schemeTable(aTable(attr).t.name).getA(sub), new ArrayBuffer[F], new ArrayBuffer[F]))
+        N(aTable(attr), Some(schemeTable(aTable(attr).t.name).getA(sub)), new ArrayBuffer[F], new ArrayBuffer[F]))
   }
 
   /**

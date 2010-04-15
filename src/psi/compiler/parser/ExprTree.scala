@@ -16,8 +16,8 @@ class ExprTree
 abstract class Expression extends ExprTree {
   override def toString(): String = this match {
     case Number(value) => value toString
-    case AttributeOccurrence(value, null) => value
-    case AttributeOccurrence(value, sub) => value + "." + sub
+    case AttributeOccurrence(value, None) => value
+    case AttributeOccurrence(value, Some(sub)) => value + "." + sub
     case Operator(left, right, op) => List(left, op, right) mkString ("(", " ", ")")
   }
 }
@@ -31,7 +31,7 @@ case class Number(value: Int) extends Expression
  * Attribute occurrence
  * Also support dotted names i.e. attr.sub
  */
-case class AttributeOccurrence(value: String, sub: String) extends Expression
+case class AttributeOccurrence(value: String, sub: Option[String]) extends Expression
 
 /**
  * Binary operator `op` for `left` and `right` expressions
@@ -46,7 +46,7 @@ abstract class Relation(name: String) extends ExprTree
 /**
  * Scheme representation
  */
-case class Scheme(name: String, condition: IfStatement, attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
+case class Scheme(name: String, condition: Option[IfStatement], attributes: List[AttributeDef], fls: List[FL]) extends Relation(name)
 
 /**
  * Task representation

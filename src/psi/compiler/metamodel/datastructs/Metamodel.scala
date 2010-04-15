@@ -34,7 +34,7 @@ trait R extends Metamodel {
 /**
  * Scheme
  */
-case class S(name: String, condition: G, thenBranch: V, elseBranch: V, fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N]) extends R {
+case class S(name: String, condition: Option[G], thenBranch: Option[V], elseBranch: Option[V], fls: List[F], aTable: HashMap[String, A], nTable: HashMap[String, N]) extends R {
   def getA(attr: String): A = aTable(attr)
 
   def getN(attr: String): N = nTable(attr)
@@ -78,8 +78,14 @@ case class A(name: String, t: T) extends Metamodel {
 /**
  * Attribute occurrence
  */
-case class N(name: A, surname: A, left: ArrayBuffer[F], right: ArrayBuffer[F]) extends Metamodel {
-  def attrName: String = name.name + {if (surname != null) "." + surname.name else ""}
+case class N(name: A, surname: Option[A], left: ArrayBuffer[F], right: ArrayBuffer[F]) extends Metamodel {
+  def attrName(): String = {
+    val appendix = surname match {
+      case None => ""
+      case Some(n) => "." + n.name
+    }
+    return name.name + appendix
+  }
 
   override def toString = "N(" + attrName + "; " + left.mkString(",") + "; " + right.mkString(",") + ")"
 }

@@ -52,8 +52,7 @@ object PSIParser extends JavaTokenParsers {
    * Scheme
    */
   def S: Parser[Scheme] = ("S" ~> ident) ~ ("{" ~> A) ~ ("|" ~> repsep(F, ";") <~ "}") ~ opt(i) ^^ {
-    case name ~ attributes ~ fls ~ None => Scheme(name, null, attributes, fls)
-    case name ~ attributes ~ fls ~ Some(condition) => Scheme(name, condition, attributes, fls)
+    case name ~ attributes ~ fls ~ condition => Scheme(name, condition, attributes, fls)
   }
 
   /**
@@ -100,8 +99,7 @@ object PSIParser extends JavaTokenParsers {
    * Attribute occurrence
    */
   def n: Parser[AttributeOccurrence] = ident ~ opt("." ~> ident) ^^ {
-    case a ~ None => AttributeOccurrence(a, null)
-    case a ~ Some(sub) => AttributeOccurrence(a, sub)
+    case a ~ sub => AttributeOccurrence(a, sub)
   }
 
   /**

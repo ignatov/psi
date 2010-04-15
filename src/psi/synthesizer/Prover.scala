@@ -3,6 +3,7 @@ package psi.synthesizer
 import datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
 import psi.compiler.metamodel.datastructs._
 import collection.mutable.ArrayBuffer
+
 /**
  * User: ignatov
  * Date: 03.04.2010
@@ -64,43 +65,42 @@ class Prover {
       unreached remove (unreached indexOf a)
   }
 
-  def processCaseStatement(scheme: S, guard: G): List[N] = {
-    if (guard == null || !contains(reached.toList, guard.expr.args))
-      return Nil
+  /**
+   * @return list of attributes reached on case branches
+   */
+  def processCaseStatement(scheme: S, guard: Option[G]): List[N] = {
+    guard match {
+      case None => Nil
+      case Some(guard) =>
+        if (!contains(reached.toList, guard.expr.args))
+          return Nil
 
-    // life is good
-    val reachedOnLeftCase = new ArrayBuffer[N]
-    val reachedOnRightCase = new ArrayBuffer[N]
-    val leftFunctions = new ArrayBuffer[F]
-    val rightFunctions = new ArrayBuffer[F]
-    val conditionStep = new ConditionStep(guard, new ArrayBuffer, new ArrayBuffer)
+        val conditionStep = new ConditionStep(guard, new ArrayBuffer, new ArrayBuffer)
 
-    for (f: F <- scheme.thenBranch.fls) { //todo: what about order?
-      if (contains((reached.toList ::: reachedOnRightCase.toList) map (_.name), f.expr.args map (_.name))) {
-        rightFunctions append f
-        reachedOnRightCase append f.res
-        conditionStep.thenSteps.append(new SingleStep(f, f.res))
-      }
-    } //todo: remove used fls
+        def processBranch(branch: Option[V], proofSteps: ArrayBuffer[SingleStep]): List[N] = { //todo: cleanup
+          branch match {
+            case None => Nil
+            case Some(branch) =>
+              var result = List[N]()
+              for (f: F <- branch.fls) { //todo: what about order?
+                if (contains((reached.toList ::: result) map (_.name), f.expr.args map (_.name))) {
+                  proofSteps.append(new SingleStep(f, f.res))
+                  result = f.res :: result
+                }
+              } //todo: remove used fls
+              result
+          }
+        }
 
-    for (f: F <- scheme.elseBranch.fls) {
-      if (contains((reached.toList ::: reachedOnLeftCase.toList) map (_.name), f.expr.args map (_.name))) {
-        leftFunctions append f
-        reachedOnLeftCase append f.res
-        conditionStep.elseSteps.append(new SingleStep(f, f.res))
-      }
+        // life is good
+        val reachedOnLeftCase = processBranch(scheme.elseBranch, conditionStep.elseSteps)
+        val reachedOnRightCase = processBranch(scheme.thenBranch, conditionStep.thenSteps)
+
+        proofSteps append conditionStep
+
+        val intersected = (reachedOnLeftCase map ((n: N) => n.attrName)) intersect (reachedOnRightCase.toList map ((n: N) => n.attrName))
+
+        return intersected map ((name: String) => scheme.nTable(name))
     }
-
-    val intersected = ((reachedOnLeftCase.toList) map ((n: N) => n.attrName)) intersect ((reachedOnRightCase.toList) map ((n: N) => n.attrName))
-
-//    for (f <- rightFunctions if intersected contains f.res.attrName)
-//      proofSteps append new SingleStep(f, f.res)
-//
-//    for (f <- leftFunctions if intersected contains f.res.attrName)
-//      proofSteps append new SingleStep(f, f.res)
-
-    proofSteps append conditionStep
-
-    return intersected map ((name: String) => scheme.nTable(name))
   }
 }

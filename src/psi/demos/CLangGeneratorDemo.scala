@@ -22,12 +22,12 @@ object CLangGeneratorDemo {
       return Nil
     }
 
-    val pack: P = Converter convert parseResult.get
+    val pack: P = new Converter convert parseResult.get
     pack.relations.values.map(
       (relation: R) => relation match {
         case task: Q => (new CLangGenerator generate (new Prover doProof (pack, task))) + "-" * 20
         case _ => ""
-      })
+      }).filter((x) => x != "")
   }
 
   def main(args: Array[String]): Unit = {

@@ -1,11 +1,10 @@
 package psi.demos
 
 import java.io.File
-import scala.io.Source.fromFile
 import psi.compiler.parser.PSIParser
 import psi.compiler.metamodel.Converter
-import psi.compiler.metamodel.datastructs.{P, Q}
 import psi.synthesizer.Prover
+import psi.compiler.metamodel.datastructs.{R, P, Q}
 
 /**
  * User: ignatov
@@ -13,21 +12,28 @@ import psi.synthesizer.Prover
  */
 
 object ProverDemo {
+  def generate(file: File): Iterable[String] = {
+    val parseResult = PSIParser.parse(PSIParser.P, scala.io.Source.fromFile(file) mkString)
+
+    if (!parseResult.successful) {
+      Console.err.println("In file: " + file.getName)
+      Console.err.println(parseResult)
+      return Nil
+    }
+
+    val pack: P = new Converter convert parseResult.get
+    pack.relations.values.map(
+      (relation: R) => relation match {
+        case task: Q => new Prover doProof(pack, task) toString
+        case _ => ""
+      }).filter((x) => x != "")
+  }
+
   def main(args: Array[String]): Unit = {
     if (args.length != 1)
       return Console.err.println("Please enter filename")
 
-    val parseResult = PSIParser.parse(PSIParser.P, fromFile(new File(args(0))) mkString)
-
-    if (!parseResult.successful)
-      return println(parseResult)
-
-    val pack: P = Converter convert parseResult.get
-    for (relation <- pack.relations.values) {
-      relation match {
-        case task: Q => println(new Prover doProof (pack, task))
-        case _ =>
-      }
-    }
+    val file: File = new File(args(0))
+    generate(file) map println
   }
 }

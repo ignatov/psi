@@ -64,7 +64,7 @@
           <launchers>
             <launcher>
               <id>compiler</id>
-              <mainClass>psi.compiler.PSICompiler</mainClass>
+              <mainClass>psi.compiler.PsiCompiler</mainClass>
             </launcher>
           </launchers>
         </configuration>
@@ -84,7 +84,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>psi.compiler.PSICompiler</mainClass>
+                  <mainClass>psi.demos.PsiDemo</mainClass>
                 </manifest>
               </archive>
             </configuration>

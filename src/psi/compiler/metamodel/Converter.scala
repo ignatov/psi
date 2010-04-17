@@ -12,7 +12,7 @@ import collection.mutable.{ArrayBuffer, HashMap}
 /**
  * Convert from PSI AST to PSI metamodel
  */
-object Converter {
+class Converter {
   val typeTable = new HashMap[String, T]()
   val schemeTable = new HashMap[String, S]()
   val taskTable = new HashMap[String, Q]()

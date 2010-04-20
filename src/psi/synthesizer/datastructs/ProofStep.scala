@@ -15,5 +15,5 @@ case class SingleStep(fl: F, reachedAttribute: N) extends ProofStep {
 }
 
 case class ConditionStep(guard: G, thenSteps: ArrayBuffer[SingleStep], elseSteps: ArrayBuffer[SingleStep]) extends ProofStep {
-  override def toString = "ConditionStep(" + guard.expr.impl + ", " + thenSteps.mkString(",") + ", " + elseSteps.mkString(",") + ")"
+  override def toString = "ConditionStep(" + guard.expr.impl + ", " + thenSteps.mkString(", ") + " | " + elseSteps.mkString(", ") + ")"
 }

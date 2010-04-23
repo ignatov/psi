@@ -8,6 +8,10 @@ import compat.Platform.EOL
  * Date: 03.04.2010
  */
 
+/**
+ * Container for generation target.
+ * Contains input and target attributes, routine name and list of proof steps.
+ */
 case class Procedure(name: String, pack: P, input: List[N], output: List[N], steps: List[ProofStep]) {
   val indent: String = "  ";
   override def toString: String = {

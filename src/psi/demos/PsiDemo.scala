@@ -3,11 +3,17 @@ package psi.demos
 import java.io.{File, FileWriter}
 import compat.Platform.EOL
 import java.lang.String
+
 /**
  * User: ignatov
  * Date: 15.04.2010
  */
 
+/**
+ * Demo program:
+ *   - reads psi source -> create metamodel -> create proof -> generate C source
+ *   - puts all results to `out` directory
+ */
 object PsiDemo {
   def main(args: Array[String]): Unit = {
     if (args.length != 1)

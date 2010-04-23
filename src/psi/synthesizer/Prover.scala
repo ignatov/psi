@@ -9,12 +9,18 @@ import collection.mutable.{ListBuffer, ArrayBuffer}
  * Date: 03.04.2010
  */
 
+/**
+ * Proover realization.
+ */
 class Prover {
   var reached = new ArrayBuffer[N]
   var unreached = new ArrayBuffer[N]
   var functions = new ArrayBuffer[F]
   var proofSteps = new ArrayBuffer[ProofStep]
 
+  /**
+   * Create procedure for PSI-task.
+   */
   def doProof(pack: P, task: Q): Procedure = {
     val input = task.in
     val output = task.out
@@ -43,6 +49,9 @@ class Prover {
     new Procedure(task.name, pack, input, output, proofSteps.toList)
   }
 
+  /**
+   * Returns master.contains(slave)
+   */
   private def contains(master: List[Any], slave: List[Any]): Boolean = {
     for (e <- slave)
       if (!master.contains(e))
@@ -50,6 +59,9 @@ class Prover {
     true
   }
 
+  /**
+   * Smarty process for attribute.
+   */
   def process(a: N): Unit = {
     reached append a
 
@@ -66,6 +78,7 @@ class Prover {
   }
 
   /**
+   * Method for case statement processing.
    * @return list of attributes reached on case branches
    */
   def processCaseStatement(scheme: S, guard: Option[G]): List[N] = {

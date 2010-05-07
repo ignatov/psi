@@ -79,12 +79,9 @@ case class A(name: String, t: T) extends Metamodel {
  * Attribute occurrence
  */
 case class N(name: A, surname: Option[A], left: ArrayBuffer[F], right: ArrayBuffer[F]) extends Metamodel {
-  def attrName(): String = {
-    val appendix = surname match {
-      case None => ""
-      case Some(n) => "." + n.name
-    }
-    return name.name + appendix
+  def attrName(): String = surname match {
+    case None => name.name
+    case Some(n) => name.name + "." + n.name
   }
 
   override def toString = "N(" + attrName + "; " + left.mkString(",") + "; " + right.mkString(",") + ")"

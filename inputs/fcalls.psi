@@ -4,7 +4,7 @@ P Simple {
     |
     a <- b + c;
     b <- c * 2;
-    d <- f(g(a), k(b))
+    d <- f(g(a), k(a + b))
   };
   Q find_d2 {on Simple in c out d}
 }

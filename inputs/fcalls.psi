@@ -1,0 +1,10 @@
+P Simple {
+  S Simple {
+    int a, b, c, d
+    |
+    a <- b + c;
+    b <- c * 2;
+    d <- f(g(a), k(b))
+  };
+  Q find_d2 {on Simple in c out d}
+}

@@ -12,10 +12,14 @@ import util.parsing.combinator._
  * PSI Grammar from PSI-Defs.doc
  */
 object PSIParser extends JavaTokenParsers {
+  /**
+   * Main parser method
+   */
   def parse(in: String): ParseResult[Package] = {
     val lineComment = "//.*".r
-    parse(P, lineComment replaceAllIn(in, ""))
+    parse(P, lineComment replaceAllIn (in, ""))
   }
+
   /**
    * Primitive type
    */

@@ -9,8 +9,8 @@ P Pack {
     Complex z1, z2;
     real a, b, c, d
     |
-    a <- z1.x + z1.y;
-    b <- z2.x + z2.y;
+    a <- sqrt((z1.x * z1.x) + (z1.y * z1.y));
+    b <- sqrt((z2.x * z2.x) + (z2.y * z2.y));
     c <- (a + b) * d
   };
   Q task {

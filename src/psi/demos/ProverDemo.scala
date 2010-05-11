@@ -13,7 +13,7 @@ import psi.compiler.metamodel.datastructs.{R, P, Q}
 
 object ProverDemo {
   def generate(file: File): Iterable[String] = {
-    val parseResult = PSIParser.parse(PSIParser.P, scala.io.Source.fromFile(file) mkString)
+    val parseResult = PSIParser.parse(scala.io.Source.fromFile(file) mkString)
 
     if (!parseResult.successful) {
       Console.err.println("In file: " + file.getName)

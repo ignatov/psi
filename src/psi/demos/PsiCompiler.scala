@@ -25,7 +25,7 @@ object PsiCompiler {
   }
 
   def compile(file: File): Option[P] = {
-    val parseResult = PSIParser.parse(PSIParser.P, fromFile(file) mkString)
+    val parseResult = PSIParser.parse(fromFile(file) mkString)
     if (!parseResult.successful) {
       Console.err.println("In file: " + file.getName)
       Console.err.println(parseResult)

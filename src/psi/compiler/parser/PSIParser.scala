@@ -12,6 +12,7 @@ import util.parsing.combinator._
  * PSI Grammar from PSI-Defs.doc
  */
 object PSIParser extends JavaTokenParsers {
+  def parse(in: String): ParseResult[Package] = parse(P, in)
   /**
    * Primitive type
    */

@@ -84,6 +84,7 @@ class Converter {
     case AttributeOccurrence(attr, sub) => List(AttributeOccurrence(attr, sub))
     case Number(_) => Nil
     case Operator(left, right, op) => getOccurrences(left) ::: getOccurrences(right)
+    case FunctionCall(name, es) => es.flatMap(e => getOccurrences(e))
   }
 
   /**

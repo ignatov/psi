@@ -19,6 +19,7 @@ abstract class Expression extends ExprTree {
     case AttributeOccurrence(value, None) => value
     case AttributeOccurrence(value, Some(sub)) => value + "." + sub
     case Operator(left, right, op) => List(left, op, right) mkString ("(", " ", ")")
+    case FunctionCall(name, es) => name + "(" + es.mkString (", ") + ")"
   }
 }
 
@@ -37,6 +38,11 @@ case class AttributeOccurrence(value: String, sub: Option[String]) extends Expre
  * Binary operator `op` for `left` and `right` expressions
  */
 case class Operator(left: Expression, right: Expression, op: String) extends Expression
+
+/**
+ * Function call
+ */
+case class FunctionCall(name: String, es: List[Expression]) extends Expression
 
 /**
  * Relation base class for named elements

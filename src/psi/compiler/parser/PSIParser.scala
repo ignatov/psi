@@ -78,11 +78,13 @@ object PSIParser extends JavaTokenParsers {
   /**
    * Operator usage
    */
-  def X: Parser[Expression] = (Y ~ rep(op ~ Y)) ^^ {
+  def X: Parser[Expression] = ((ident ~ ("(" ~> repsep(X, ",") <~ ")")) ^^ {
+    case name ~ lst => FunctionCall(name, lst)
+  }) | ((Y ~ rep(op ~ Y)) ^^ {
     case a ~ lst => (a /: lst) {
       case (x, op ~ y) => Operator(x, y, op)
     }
-  }
+  })
 
   /**
    * Task

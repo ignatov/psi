@@ -6,8 +6,8 @@ P Simple {
     b <- c * 2;
     d <- a + b
   };
-  Q find_a {on Simple in c out a};
-  Q find_a_2 {on Simple in b, c out a};
+  Q find_a {on Simple in c out a}; //first task
+  Q find_a_2 {on Simple in b, c out a}; //second task
   Q find_b {on Simple in c out b};
   Q find_c {on Simple in c out c};
   Q find_d {on Simple in c, b out d};

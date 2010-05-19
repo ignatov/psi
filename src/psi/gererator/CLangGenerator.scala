@@ -55,12 +55,15 @@ class CLangGenerator extends Generator {
     }
 
     for (step: ProofStep <- procedure.steps) {
+      def addType(step: SingleStep): Unit = {
+        addAttributeType(step.reachedAttribute)
+        addAttributeType(step.fl.res)
+        step.fl.expr.args.map(addAttributeType)
+      }
       step match {
-        case step: SingleStep =>
-          addAttributeType(step.reachedAttribute)
-          addAttributeType(step.fl.res)
-          step.fl.expr.args.map(addAttributeType)
-        case _ =>
+        case s: SingleStep => addType(s)
+        case p: ParallelStep => p.steps.foreach(addType)
+        case c: ConditionStep => c.thenSteps.foreach(addType); c.elseSteps.foreach(addType)
       }
     }
 
@@ -104,7 +107,6 @@ class CLangGenerator extends Generator {
 
   private def generateProcedure(procedure: Procedure): String = {
     val result: A = procedure.output(0).name
-
 
     def generateVariableDefinitions(steps: List[ProofStep]): String = {
       def generateDef(x: SingleStep): String = {

@@ -28,7 +28,7 @@ object PsiDemo {
 
     new File(outDir).mkdir
 
-    for (file <- dir.listFiles) {
+    for (file <- dir.listFiles; if file.getName.endsWith(".psi")) {
       val dirName = file.getName.replace(".psi", "")
       new File(outDir + "/" + dirName).mkdir
 

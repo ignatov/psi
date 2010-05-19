@@ -2,7 +2,7 @@ package psi.gererator
 
 import collection.mutable.{ArrayBuffer, HashSet}
 import compat.Platform.EOL
-import psi.synthesizer.datastructs.{ConditionStep, SingleStep, ProofStep, Procedure}
+import psi.synthesizer.datastructs.{ConditionStep, SingleStep, ProofStep, ParallelStep, Procedure}
 import psi.compiler.metamodel.datastructs.{S, A, N}
 
 /**
@@ -120,6 +120,8 @@ class CLangGenerator extends Generator {
                 names append (generateDef(x))
               else
                 ""
+            case x: ParallelStep =>
+              x.steps.map(s => names append (generateDef(s)))
             case x: ConditionStep =>
               x.thenSteps.map((s: SingleStep) => names append (generateDef(s)))
               x.elseSteps.map((s: SingleStep) => names append (generateDef(s)))
@@ -139,6 +141,7 @@ class CLangGenerator extends Generator {
         (x: ProofStep) =>
           x match {
             case x: SingleStep => indent + generateFunctionalLink(x)
+            case x: ParallelStep => x.steps.map(s => indent + generateFunctionalLink(s)).mkString(EOL)
             case x: ConditionStep =>
               indent +
                 "if (" + x.guard.expr.impl + ") {" + EOL +

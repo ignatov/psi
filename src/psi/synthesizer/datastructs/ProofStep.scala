@@ -21,6 +21,13 @@ case class SingleStep(fl: F, reachedAttribute: N) extends ProofStep {
 }
 
 /**
+ * Step for parallelization
+ */
+case class ParallelStep(steps: List[SingleStep]) extends ProofStep {
+  override def toString = "ParallelStep(" + steps.mkString(", ") + ")"
+}
+
+/**
  * Condition step with two lists of single steps
  */
 case class ConditionStep(guard: G, thenSteps: ArrayBuffer[SingleStep], elseSteps: ArrayBuffer[SingleStep]) extends ProofStep {

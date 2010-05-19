@@ -46,7 +46,7 @@ class Prover {
       proofSteps append (new SingleStep(f, result))
     }
 
-    new Procedure(task.name, pack, input, output, proofSteps.toList)
+    new Procedure(task.name, pack, input, output, Parallelizer.work(proofSteps.toList))
   }
 
   /**

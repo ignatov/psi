@@ -6,5 +6,5 @@ P Simple {
     d <- b * 2;
     e <- c + d
   };
-  Q find_c {on Simple in a, b out e}
+  Q find_e {on Simple in a, b out e}
 }

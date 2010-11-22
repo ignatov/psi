@@ -36,6 +36,10 @@ object PsiDemo {
       outC.write(CLangGeneratorDemo.generate(file) mkString EOL)
       outC.close
 
+      val outTS = new FileWriter("out/" + dirName + "/" + dirName + ".cpp")
+      outTS.write(OpenTSLangGeneratorDemo.generate(file) mkString EOL)
+      outTS.close
+      
       val outProof = new FileWriter("out/" + dirName + "/" + dirName + ".proof")
       outProof.write(ProverDemo.generate(file) mkString EOL)
       outProof.close
